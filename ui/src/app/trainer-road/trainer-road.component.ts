@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -34,6 +35,7 @@ export class TrainerRoadComponent implements OnInit {
   platformInfo: PlatformConnectionInfo | undefined;
 
   private readonly platform = Platform.TRAINER_ROAD;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private configurationClient: ConfigurationClient
@@ -41,8 +43,10 @@ export class TrainerRoadComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.configurationClient.platformInfo(this.platform.key).subscribe(value => {
-      this.platformInfo = value;
-    });
+    this.configurationClient.platformInfo(this.platform.key)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(value => {
+        this.platformInfo = value;
+      });
   }
 }

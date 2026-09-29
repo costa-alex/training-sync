@@ -1,5 +1,3 @@
-const requiredConfigKeys = ['intervals.api-key', 'intervals.athlete-id']
-
 export type PlatformKey = 'INTERVALS' | 'TRAINING_PEAKS' | 'TRAINER_ROAD';
 
 export interface PlatformDefinition {

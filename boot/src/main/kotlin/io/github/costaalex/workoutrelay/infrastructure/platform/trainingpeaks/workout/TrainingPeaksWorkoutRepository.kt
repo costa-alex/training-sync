@@ -7,7 +7,6 @@ import io.github.costaalex.workoutrelay.domain.librarycontainer.LibraryContainer
 import io.github.costaalex.workoutrelay.domain.workout.Workout
 import io.github.costaalex.workoutrelay.domain.workout.WorkoutDetails
 import io.github.costaalex.workoutrelay.domain.workout.WorkoutRepository
-import io.github.costaalex.workoutrelay.domain.workout.structure.SingleStep
 import io.github.costaalex.workoutrelay.infrastructure.PlatformException
 import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
 import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.configuration.TrainingPeaksConfigurationRepository
@@ -59,13 +58,15 @@ class TrainingPeaksWorkoutRepository(
     }
 
     private fun getWorkoutsFromTPCoachPlan(libraryContainer: LibraryContainer): List<Workout> {
+        val planId = libraryContainer.externalData.trainingPeaksId
+            ?: throw IllegalArgumentException("Cannot fetch plan workouts without TrainingPeaks ID")
         val planWorkouts = trainingPeaksPlanCoachApiClient.getPlanWorkouts(
-            libraryContainer.externalData.trainingPeaksId!!,
+            planId,
             libraryContainer.startDate.minusYears(10).toString(),
             libraryContainer.startDate.plusYears(2).toString()
         )
         val planNotes = trainingPeaksPlanCoachApiClient.getPlanNotes(
-            libraryContainer.externalData.trainingPeaksId,
+            planId,
             libraryContainer.startDate.minusYears(10).toString(),
             libraryContainer.startDate.plusYears(2).toString()
         )
@@ -157,7 +158,8 @@ class TrainingPeaksWorkoutRepository(
     }
 
     private fun getWorkoutsFromTPPlan(libraryContainer: LibraryContainer): List<Workout> {
-        val planId = libraryContainer.externalData.trainingPeaksId!!
+        val planId = libraryContainer.externalData.trainingPeaksId
+            ?: throw IllegalArgumentException("Cannot apply plan without TrainingPeaks ID")
         val planStartDateShift = trainingPeaksConfigurationRepository.getConfiguration().planDaysShift
         val planStartDate = Date.thisMonday()
         val planApplyDate = planStartDate.plusDays(planStartDateShift)
@@ -165,33 +167,25 @@ class TrainingPeaksWorkoutRepository(
 
         try {
             val planEndDate = response.endDate.toLocalDate()
-
-            val workouts = getWorkoutsFromCalendar(planApplyDate, planEndDate).map {
-                it.withDate(it.date!!.minusDays(planStartDateShift))
+            return getWorkoutsFromCalendar(planApplyDate, planEndDate).map { workout ->
+                val workoutDate = workout.date
+                    ?: throw IllegalStateException("Plan workout '${workout.details.name}' has no date")
+                workout.withDate(workoutDate.minusDays(planStartDateShift))
             }
-            return workouts
-        } catch (e: Exception) {
-            throw e
         } finally {
             trainingPeaksPlanRepository.removeAppliedPlan(response.appliedPlanId)
         }
     }
 
     private fun getWorkoutsFromTPLibrary(library: LibraryContainer): List<Workout> {
-        return tpWorkoutLibraryRepository.getLibraryWorkouts(library.externalData.trainingPeaksId!!)
+        val libraryId = library.externalData.trainingPeaksId
+            ?: throw IllegalArgumentException("Cannot fetch library workouts without TrainingPeaks ID")
+        return tpWorkoutLibraryRepository.getLibraryWorkouts(libraryId)
     }
 
     private fun getNoteEndDateForFilter(startDate: LocalDate, endDate: LocalDate): LocalDate =
         if (startDate == endDate) endDate.plusDays(1) else endDate
 
-    private fun targetPreview(workout: Workout): String {
-        return workout.structure?.steps
-            ?.filterIsInstance<SingleStep>()
-            ?.take(8)
-            ?.joinToString { "${it.name}:${it.target.start}-${it.target.end}" }
-            ?: "no structure"
-    }
-    
     override fun deleteWorkoutFromCalendar(workout: Workout) {
         val externalData = workout.details.externalData
 

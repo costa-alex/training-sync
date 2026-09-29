@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
@@ -13,7 +14,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {ConfigurationClient} from "infrastructure/client/configuration.client";
 import {NotificationService} from "infrastructure/notification.service";
-import {filter, finalize, map, of} from "rxjs";
+import {filter, finalize, forkJoin, map} from "rxjs";
 import {LibraryClient} from "infrastructure/client/library-client.service";
 import {Platform} from "infrastructure/platform";
 import {MatDialog} from "@angular/material/dialog";
@@ -56,14 +57,17 @@ export class TpCopyLibraryContainerComponent implements OnInit {
     stepModifier: ['NONE', Validators.required],
   });
 
-  // isPlanSelected = this.formGroup.controls['plan'].valueChanges.pipe(map(value => value?.isPlan))
-  isPlanSelected = of(false)
+  isPlanSelected = this.formGroup.controls['plan'].valueChanges.pipe(
+    map(value => !!value?.isPlan)
+  )
   submitInProgress = false
   loadingInProgress = false
 
   stepModifiers = StepModifier.stepModifiers;
   plans: { name: string; value: LibraryContainer }[];
   config: Record<string, string | boolean | null> = {};
+
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -77,8 +81,21 @@ export class TpCopyLibraryContainerComponent implements OnInit {
   ngOnInit(): void {
     this.formGroup.disable()
     this.loadingInProgress = true
-    this.getConfig();
-    this.getPlans();
+
+    forkJoin({
+      config: this.getConfig(),
+      plans: this.getPlans()
+    }).pipe(
+      finalize(() => {
+        this.loadingInProgress = false
+        this.formGroup.enable()
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(({config, plans}) => {
+      this.config = config
+      this.plans = plans
+    })
+
     this.onPlanChange();
   }
 
@@ -98,13 +115,14 @@ export class TpCopyLibraryContainerComponent implements OnInit {
 
   private copyPlan(): void {
     this.submitInProgress = true
-    let plan = this.formGroup.value.plan
-    let newName = this.formGroup.value.newName
-    let newStartDate = this.formGroup.value.newStartDate
-    let stepModifier = this.formGroup.value.stepModifier
-    let direction = Platform.DIRECTION_TP_INT
+    const plan = this.formGroup.value.plan
+    const newName = this.formGroup.value.newName
+    const newStartDate = this.formGroup.value.newStartDate
+    const stepModifier = this.formGroup.value.stepModifier
+    const direction = Platform.DIRECTION_TP_INT
     this.planClient.copyLibraryContainer(plan, newName, newStartDate, stepModifier, direction).pipe(
-      finalize(() => this.submitInProgress = false)
+      finalize(() => this.submitInProgress = false),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe((response) => {
       this.notificationService.success(
         `Library name: ${response.planName}\nCopied workouts: ${response.workouts}`)
@@ -119,11 +137,13 @@ export class TpCopyLibraryContainerComponent implements OnInit {
       data: plan,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        continueCallback()
-      }
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(result => {
+        if (result) {
+          continueCallback()
+        }
+      });
   }
 
   private getMonday(date: Date): Date {
@@ -133,28 +153,25 @@ export class TpCopyLibraryContainerComponent implements OnInit {
     return new Date(date.setDate(diff));
   }
 
-  private getConfig(): void {
-    this.configurationClient.getConfig().subscribe(config => {
-      this.config = config.config
-    })
+  private getConfig() {
+    return this.configurationClient.getConfig().pipe(
+      map(config => config.config)
+    )
   }
 
-  private getPlans(): void {
-    this.planClient.getLibraries(Platform.TRAINING_PEAKS.key).pipe(
+  private getPlans() {
+    return this.planClient.getLibraries(Platform.TRAINING_PEAKS.key).pipe(
       map(plans => plans.map(plan => {
           return {name: plan.name, value: plan}
         })
-      ),
-      finalize(() => {
-        this.loadingInProgress = false
-        this.formGroup.enable()
-      })
-    ).subscribe(plans => this.plans = plans)
+      )
+    )
   }
 
   private onPlanChange(): void {
     this.formGroup.controls['plan'].valueChanges.pipe(
-      filter(value => value!!)
+    filter(value => !!value),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(value => {
       this.formGroup.patchValue({
         newName: value.name

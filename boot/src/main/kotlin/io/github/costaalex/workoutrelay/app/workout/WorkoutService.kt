@@ -137,10 +137,6 @@ class WorkoutService(
     private fun reconcileTrainerRoadToTrainingPeaksRange(
         request: CopyFromCalendarToCalendarRequest
     ): CopyWorkoutsResponse {
-        require(!request.startDate.isAfter(request.endDate)) {
-            "Start date cannot be after end date"
-        }
-
         val responses = mutableListOf<CopyWorkoutsResponse>()
         var currentDate = request.startDate
 
@@ -435,16 +431,7 @@ class WorkoutService(
         require(request.name.isNotBlank()) {
             "Library name cannot be blank"
         }
-        require(
-            request.targetPlatform == Platform.INTERVALS &&
-                request.sourcePlatform in setOf(
-                    Platform.TRAINER_ROAD,
-                    Platform.TRAINING_PEAKS,
-                )
-        ) {
-            "Calendar-to-library synchronization from ${request.sourcePlatform} " +
-                "to ${request.targetPlatform} is not supported"
-        }
+        requireSupportedLibraryDirection(request.sourcePlatform, request.targetPlatform)
         log.debug("Received request for copy calendar to library: $request")
         val sourceWorkoutRepository = getWorkoutRepository(request.sourcePlatform)
         val targetWorkoutRepository = getWorkoutRepository(request.targetPlatform)
@@ -469,16 +456,7 @@ class WorkoutService(
     }
 
     fun copyWorkoutL2L(request: CopyFromLibraryToLibraryRequest): CopyWorkoutsResponse {
-        require(
-            request.targetPlatform == Platform.INTERVALS &&
-                request.sourcePlatform in setOf(
-                    Platform.TRAINER_ROAD,
-                    Platform.TRAINING_PEAKS,
-                )
-        ) {
-            "Library synchronization from ${request.sourcePlatform} " +
-                "to ${request.targetPlatform} is not supported"
-        }
+        requireSupportedLibraryDirection(request.sourcePlatform, request.targetPlatform)
         log.debug("Received request for copy library to library: $request")
         val sourceWorkoutRepository = getWorkoutRepository(request.sourcePlatform)
         val targetWorkoutRepository = getWorkoutRepository(request.targetPlatform)
@@ -490,8 +468,8 @@ class WorkoutService(
             filteredOut = 0,
             skippedByType = 0,
             skippedAlreadySynced = 0,
-            startDate = LocalDate.now(),
-            endDate = LocalDate.now(),
+            startDate = null,
+            endDate = null,
             externalData = request.targetLibraryContainer.externalData
         )
     }
@@ -527,6 +505,21 @@ class WorkoutService(
             workout.details.description?.contains(
                 ExternalData.DESCRIPTION_SEPARATOR
             ) == true
+    }
+
+    private fun requireSupportedLibraryDirection(
+        sourcePlatform: Platform,
+        targetPlatform: Platform,
+    ) {
+        require(
+            targetPlatform == Platform.INTERVALS &&
+                sourcePlatform in setOf(
+                    Platform.TRAINER_ROAD,
+                    Platform.TRAINING_PEAKS,
+                )
+        ) {
+            "Library synchronization from $sourcePlatform to $targetPlatform is not supported"
+        }
     }
 
     private fun requireValidDateRange(

@@ -25,9 +25,9 @@ class IntervalsWorkoutRepository(
     override fun platform() = Platform.INTERVALS
 
     override fun saveWorkoutsToCalendar(workouts: List<Workout>) {
+        val converter = ToIntervalsWorkoutConverter()
         workouts.forEach {
-            val toIntervalsWorkoutConverter = ToIntervalsWorkoutConverter()
-            val request = toIntervalsWorkoutConverter.createEventRequestDTO(it)
+            val request = converter.createEventRequestDTO(it)
             intervalsApiClient.createEvent(intervalsConfigurationRepository.getConfiguration().athleteId, request)
         }
     }
@@ -61,19 +61,19 @@ class IntervalsWorkoutRepository(
     }
 
     override fun getWorkoutFromLibrary(externalData: ExternalData): Workout {
-        TODO("Not yet implemented")
+        throw PlatformException(Platform.INTERVALS, "Intervals.icu workout library lookup is not supported")
     }
 
     override fun findWorkoutsFromLibraryByName(name: String): List<WorkoutDetails> {
-        TODO("Not yet implemented")
+        throw PlatformException(Platform.INTERVALS, "Intervals.icu workout library search is not supported")
     }
 
     override fun getWorkoutsFromLibrary(libraryContainer: LibraryContainer): List<Workout> {
-        TODO("Not yet implemented")
+        throw PlatformException(Platform.INTERVALS, "Intervals.icu workout library listing is not supported")
     }
 
     override fun deleteWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate) {
-        TODO("Not yet implemented")
+        throw PlatformException(Platform.INTERVALS, "Intervals.icu calendar workout deletion is not supported")
     }
 
     private fun toWorkout(eventDTO: IntervalsEventDTO): Workout? {

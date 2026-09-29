@@ -53,7 +53,7 @@ class WorkoutScheduledJob(
                         ?: return@mapNotNull null
 
                 ScheduledSyncResponse(
-                    id = requireNotNull(entity.id),
+                    id = entity.id ?: return@mapNotNull null,
                     types = request.types,
                     skipSynced = request.skipSynced,
                     sourcePlatform = request.sourcePlatform,
@@ -128,13 +128,15 @@ class WorkoutScheduledJob(
     private fun ScheduleRequestEntity.tryToSchedulable():
         C2CScheduledRequest? {
 
-        return try {
-            objectMapper.readValue(
-                requireNotNull(requestJson) {
-                    "Scheduled sync request JSON is missing"
-                },
-                C2CScheduledRequest::class.java
+        if (requestJson == null) {
+            log.error(
+                "Ignoring invalid scheduled sync. id={}, reason=missing request JSON",
+                id
             )
+            return null
+        }
+        return try {
+            objectMapper.readValue(requestJson, C2CScheduledRequest::class.java)
         } catch (exception: Exception) {
             log.error(
                 "Ignoring invalid scheduled sync. id={}, reason={}",
@@ -142,7 +144,6 @@ class WorkoutScheduledJob(
                 exception.message
                     ?: exception.javaClass.simpleName
             )
-
             null
         }
     }

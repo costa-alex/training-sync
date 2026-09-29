@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {formatDate} from "utils/date-formatter";
 import {WorkoutClient} from "infrastructure/client/workout.client";
@@ -64,6 +65,8 @@ export class TpCopyCalendarToLibraryComponent implements OnInit {
   });
   inProgress = false
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private formBuilder: FormBuilder,
     private workoutClient: WorkoutClient,
@@ -82,7 +85,8 @@ export class TpCopyCalendarToLibraryComponent implements OnInit {
     let endDate = formatDate(this.formGroup.value.endDate)
     let isPlan = this.formGroup.value.isPlan
     this.workoutClient.copyCalendarToLibrary(name, startDate, endDate, trainingTypes, this.direction, isPlan).pipe(
-      finalize(() => this.inProgress = false)
+      finalize(() => this.inProgress = false),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe((response) => {
       this.notificationService.copyCalendarToLibraryCompleted(response, name)
     })

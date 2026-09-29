@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, DestroyRef, Input, OnInit, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -60,10 +61,12 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   @Input() trainingTypes: TrainingTypeOption[] = []
   @Input() selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE']
   @Input() directions: DirectionOption[] = []
-  @Input() inProgress = false
+  inProgress = false
 
   formGroup: FormGroup
   platformsInfo: PlatformConnectionMap = {}
+
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -75,9 +78,11 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.configurationClient.getAllPlatformInfo().subscribe(value => {
-      this.platformsInfo = value
-    })
+    this.configurationClient.getAllPlatformInfo()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(value => {
+        this.platformsInfo = value
+      })
     this.formGroup = this.getFormGroup();
     this.applyDirectionFromQueryParams();
   }
@@ -149,7 +154,8 @@ export class CopyCalendarToCalendarComponent implements OnInit {
         replaceChangedWorkouts
       )
       .pipe(
-        finalize(() => this.inProgress = false)
+        finalize(() => this.inProgress = false),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(response => {
         this.notificationService.copyCalendarToCalendarCompleted(
@@ -179,24 +185,26 @@ export class CopyCalendarToCalendarComponent implements OnInit {
   }
 
   private applyDirectionFromQueryParams(): void {
-    this.activatedRoute.queryParamMap.subscribe(params => {
-      const sourcePlatform = params.get('source');
-      const targetPlatform = params.get('target');
+    this.activatedRoute.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const sourcePlatform = params.get('source');
+        const targetPlatform = params.get('target');
 
-      if (!sourcePlatform || !targetPlatform) {
-        return;
-      }
+        if (!sourcePlatform || !targetPlatform) {
+          return;
+        }
 
-      const selectedDirection = this.directions.find(direction =>
-        this.platformKey(direction.value.sourcePlatform) === sourcePlatform &&
-        this.platformKey(direction.value.targetPlatform) === targetPlatform
-      );
+        const selectedDirection = this.directions.find(direction =>
+          this.platformKey(direction.value.sourcePlatform) === sourcePlatform &&
+          this.platformKey(direction.value.targetPlatform) === targetPlatform
+        );
 
-      if (selectedDirection) {
-        this.formGroup.patchValue({
-          direction: selectedDirection.value
-        });
-      }
-    });
+        if (selectedDirection) {
+          this.formGroup.patchValue({
+            direction: selectedDirection.value
+          });
+        }
+      });
   }
 }

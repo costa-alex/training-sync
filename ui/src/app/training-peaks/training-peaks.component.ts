@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {
   TpCopyCalendarToCalendarComponent
 } from "app/training-peaks/tp-copy-calendar-to-calendar/tp-copy-calendar-to-calendar.component";
@@ -33,14 +34,18 @@ import {MatIconModule} from '@angular/material/icon';
 export class TrainingPeaksComponent implements OnInit {
   platformInfo: PlatformConnectionInfo | undefined;
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private configurationClient: ConfigurationClient
   ) {
   }
 
   ngOnInit(): void {
-    this.configurationClient.platformInfo(Platform.TRAINING_PEAKS.key).subscribe(value => {
-      this.platformInfo = value
-    })
+    this.configurationClient.platformInfo(Platform.TRAINING_PEAKS.key)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(value => {
+        this.platformInfo = value
+      })
   }
 }

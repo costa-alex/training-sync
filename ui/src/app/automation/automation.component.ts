@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormBuilder,
@@ -121,6 +122,8 @@ export class AutomationComponent implements OnInit {
   executions: SyncExecution[] = [];
   loading = false;
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private formBuilder: FormBuilder,
     private workoutClient: WorkoutClient,
@@ -193,11 +196,18 @@ export class AutomationComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(() => {
-        this.notificationService.scheduledSyncCreated();
-        this.loadData();
+      .subscribe({
+        next: () => {
+          this.notificationService.scheduledSyncCreated();
+          this.loadData();
+        },
+        error: (error: HttpErrorResponse) => {
+          const message = error.error?.message ?? 'Unable to create the scheduled sync.';
+          this.notificationService.error(message);
+        }
       });
   }
 
@@ -209,7 +219,8 @@ export class AutomationComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: response => {
@@ -259,7 +270,8 @@ export class AutomationComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: () => {
@@ -389,7 +401,8 @@ export class AutomationComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ schedules, executions }) => {
         this.schedules = schedules;

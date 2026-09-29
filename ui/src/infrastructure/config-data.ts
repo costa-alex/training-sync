@@ -1,5 +1,7 @@
 export class ConfigData {
 
+  private static readonly REQUIRED_CONFIG_KEYS = ['intervals.api-key', 'intervals.athlete-id'];
+
   config: Record<
     string,
     string | boolean | null
@@ -26,5 +28,11 @@ export class ConfigData {
         this.config[key] = value;
       }
     });
+  }
+
+  hasRequiredConfig(): boolean {
+    return ConfigData.REQUIRED_CONFIG_KEYS.every(
+      key => !!this.config[key]
+    );
   }
 }

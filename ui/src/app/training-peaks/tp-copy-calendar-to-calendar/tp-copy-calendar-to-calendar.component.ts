@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -35,7 +35,7 @@ import {
     templateUrl: './tp-copy-calendar-to-calendar.component.html',
     styleUrl: './tp-copy-calendar-to-calendar.component.scss'
 })
-export class TpCopyCalendarToCalendarComponent implements OnInit {
+export class TpCopyCalendarToCalendarComponent {
   readonly Platform = Platform;
   readonly directions = [
     {title: "Intervals.icu → TrainingPeaks", value: Platform.DIRECTION_INT_TP},
@@ -52,10 +52,4 @@ export class TpCopyCalendarToCalendarComponent implements OnInit {
     {title: "Any other", value: "UNKNOWN"},
   ]
   readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN'];
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 }

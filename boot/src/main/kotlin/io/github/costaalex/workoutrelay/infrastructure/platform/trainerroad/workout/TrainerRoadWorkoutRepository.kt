@@ -21,7 +21,9 @@ class TrainerRoadWorkoutRepository(
     override fun platform() = Platform.TRAINER_ROAD
 
     override fun getWorkoutFromLibrary(externalData: ExternalData): Workout {
-        return trainerRoadApiClientService.getWorkout(externalData.trainerRoadId!!)
+        val trainerRoadId = externalData.trainerRoadId
+            ?: throw IllegalArgumentException("TrainerRoad workout ID is missing")
+        return trainerRoadApiClientService.getWorkout(trainerRoadId)
     }
 
     override fun findWorkoutsFromLibraryByName(name: String): List<WorkoutDetails> {
@@ -46,7 +48,7 @@ class TrainerRoadWorkoutRepository(
     }
 
     override fun deleteWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate) {
-        TODO("Not implemented")
+        throw PlatformException(Platform.TRAINER_ROAD, "TR doesn't support calendar workout deletion")
     }
 
 }

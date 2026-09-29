@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
@@ -54,6 +55,7 @@ export class TrCopyLibraryToLibraryComponent implements OnInit {
   intervalsLibraryItem: Observable<{ name: string; value: LibraryContainer }[]>;
 
   private readonly direction = Platform.DIRECTION_TR_INT
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -78,7 +80,8 @@ export class TrCopyLibraryToLibraryComponent implements OnInit {
     const workoutDetails = this.formGroup.value.trWorkoutDetails as WorkoutDetails
     const intervalsPlan = this.formGroup.value.intervalsPlan as LibraryContainer
     this.workoutClient.copyLibraryToLibrary(workoutDetails.externalData, intervalsPlan, this.direction).pipe(
-      finalize(() => this.submitInProgress = false)
+      finalize(() => this.submitInProgress = false),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe((response) => {
       this.notificationService.success(`Copied successfully`)
     })
@@ -100,7 +103,8 @@ export class TrCopyLibraryToLibraryComponent implements OnInit {
       ),
       finalize(() => {
         this.formGroup.enable()
-      })
+      }),
+      takeUntilDestroyed(this.destroyRef)
     )
   }
 
@@ -115,7 +119,8 @@ export class TrCopyLibraryToLibraryComponent implements OnInit {
         finalize(() => {
           this.searchInProgress = false
         })
-      ))
+      )),
+      takeUntilDestroyed(this.destroyRef)
     )
   }
 }

@@ -34,6 +34,7 @@ import {
   ConfigurationClient
 } from 'infrastructure/client/configuration.client';
 import { ThemeService } from 'infrastructure/theme.service';
+import { githubReadmeSectionUrl } from 'infrastructure/external-links';
 
 @Component({
     selector: 'app-configuration',
@@ -113,6 +114,12 @@ export class ConfigurationComponent implements OnInit {
   });
 
   inProgress = false;
+
+  readonly helpLinks = {
+    trainerRoad: githubReadmeSectionUrl('trainerroad'),
+    trainingPeaks: githubReadmeSectionUrl('trainingpeaks'),
+    intervalsIcu: githubReadmeSectionUrl('intervalsicu')
+  };
 
   constructor(
     private readonly router: Router,

@@ -24,6 +24,7 @@ class ConfigurationService(
 ) {
     companion object {
         private const val MASKED_VALUE = "********"
+        private const val PLATFORM_INFO_CACHE_NAME = "platformInfoCache"
 
         private val SENSITIVE_CONFIGURATION_KEYS =
             setOf(
@@ -116,15 +117,23 @@ class ConfigurationService(
 
     fun platformInfo(
         platform: Platform,
-    ): PlatformInfo =
-        getPlatformInfoRepository(platform)
-            .platformInfo()
+    ): PlatformInfo {
+        val repository = getPlatformInfoRepository(platform)
+        return try {
+            repository.platformInfo()
+        } catch (exception: Exception) {
+            log.warn("Unable to validate connection to {}", platform.title, exception)
+            PlatformInfo(mapOf("isValid" to false))
+        }
+    }
  
     fun refreshPlatformInfo(): Map<Platform, PlatformInfo> {
-        cacheManager
-            .getCache("platformInfoCache")
-            ?.clear()
-
+        val cache = cacheManager.getCache(PLATFORM_INFO_CACHE_NAME)
+        if (cache == null) {
+            log.warn("Cache '{}' not found; platform info may be stale", PLATFORM_INFO_CACHE_NAME)
+        } else {
+            cache.clear()
+        }
         return platformInfo()
     }
 

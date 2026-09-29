@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 
 interface ApplicationInfoResponse {
-  build: {
+  build?: {
     version: string;
   };
 }
@@ -29,7 +29,7 @@ export class ApplicationInfoClient {
     return this.httpClient
       .get<ApplicationInfoResponse>('/actuator/info')
       .pipe(
-        map(response => response.build.version)
+        map(response => response.build?.version ?? '')
       );
   }
 }

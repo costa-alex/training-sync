@@ -29,7 +29,7 @@ export class TopBarComponent {
     .observe('(max-width: 768px)')
     .pipe(
       map(result => result.matches),
-      shareReplay()
+      shareReplay({ bufferSize: 1, refCount: true })
     );
 
   get currentPageTitle(): string {

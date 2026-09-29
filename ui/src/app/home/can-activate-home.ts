@@ -5,8 +5,8 @@ import { ConfigurationClient } from "infrastructure/client/configuration.client"
 
 export function canActivateHome(
 ) {
-  let configClient = inject(ConfigurationClient)
-  let router = inject(Router)
+  const configClient = inject(ConfigurationClient)
+  const router = inject(Router)
 
   return configClient.getConfig().pipe(
     map(config => {

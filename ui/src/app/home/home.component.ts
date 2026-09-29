@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize, Observable } from 'rxjs';
 
@@ -124,6 +125,8 @@ export class HomeComponent implements OnInit {
   loadFailed = false;
   lastChecked: Date | null = null;
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private configurationClient: ConfigurationClient
   ) {
@@ -209,7 +212,8 @@ export class HomeComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: response => {

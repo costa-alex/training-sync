@@ -6,15 +6,18 @@ import io.github.costaalex.workoutrelay.app.workout.CopyFromLibraryToLibraryRequ
 import io.github.costaalex.workoutrelay.app.workout.CopyWorkoutsResponse
 import io.github.costaalex.workoutrelay.app.workout.WorkoutService
 import io.github.costaalex.workoutrelay.domain.Platform
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import io.github.costaalex.workoutrelay.app.workout.execution.SyncExecutionService
 import io.github.costaalex.workoutrelay.app.workout.execution.SyncExecutionTrigger
 
+@Validated
 @RestController
 class WorkoutController(
     private val workoutService: WorkoutService,
@@ -22,7 +25,7 @@ class WorkoutController(
 ) {
     @PostMapping("/api/workout/copy-calendar-to-calendar")
     fun copyWorkoutsFromCalendarToCalendar(
-        @RequestBody request: CopyFromCalendarToCalendarRequest
+        @Valid @RequestBody request: CopyFromCalendarToCalendarRequest
     ): CopyWorkoutsResponse {
         return syncExecutionService.execute(
             request = request,
@@ -31,12 +34,12 @@ class WorkoutController(
     }
 
     @PostMapping("/api/workout/copy-calendar-to-library")
-    fun copyWorkoutsFromCalendarToLibrary(@RequestBody request: CopyFromCalendarToLibraryRequest): CopyWorkoutsResponse {
+    fun copyWorkoutsFromCalendarToLibrary(@Valid @RequestBody request: CopyFromCalendarToLibraryRequest): CopyWorkoutsResponse {
         return workoutService.copyWorkoutsC2L(request)
     }
 
     @PostMapping("/api/workout/copy-library-to-library")
-    fun copyWorkoutFromLibraryToLibrary(@RequestBody request: CopyFromLibraryToLibraryRequest): CopyWorkoutsResponse {
+    fun copyWorkoutFromLibraryToLibrary(@Valid @RequestBody request: CopyFromLibraryToLibraryRequest): CopyWorkoutsResponse {
         return workoutService.copyWorkoutL2L(request)
     }
 
@@ -54,7 +57,7 @@ class WorkoutController(
     }
 
     @DeleteMapping("/api/workout")
-    fun deleteWorkoutsFromCalendar(@RequestBody request: DeleteWorkoutRequestDTO) {
+    fun deleteWorkoutsFromCalendar(@Valid @RequestBody request: DeleteWorkoutRequestDTO) {
         workoutService.deleteWorkoutsFromCalendar(request)
     }
 }
