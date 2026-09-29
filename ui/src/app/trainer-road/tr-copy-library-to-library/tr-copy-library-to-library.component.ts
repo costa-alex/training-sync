@@ -55,16 +55,14 @@ export class TrCopyLibraryToLibraryComponent implements OnInit {
   intervalsLibraryItem: Observable<{ name: string; value: LibraryContainer }[]>;
 
   private readonly direction = Platform.DIRECTION_TR_INT
-  private readonly destroyRef: DestroyRef;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private formBuilder: FormBuilder,
     private workoutClient: WorkoutClient,
     private planClient: LibraryClient,
-    private notificationService: NotificationService,
-    destroyRef: DestroyRef = inject(DestroyRef)
+    private notificationService: NotificationService
   ) {
-    this.destroyRef = destroyRef;
   }
 
   ngOnInit(): void {
