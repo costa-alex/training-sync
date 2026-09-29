@@ -52,9 +52,9 @@ class ToIntervalsWorkoutConverter {
         var description = workout.details.description
             .orEmpty()
             .replace(unwantedStepRegex, "`-")
-            .let { "$it\n- - - -\n${Signature.description(Platform.INTERVALS)}" }
+            .let { "$it\n${Signature.description(Platform.INTERVALS)}" }
         description += workoutString
-            ?.let { "\n\n- - - -\n$it" }
+            ?.let { "\n$it" }
             .orEmpty()
         description += "\n\n${workout.details.externalData.toSimpleString()}"
         return description
