@@ -27,8 +27,9 @@ class ToTPStructureConverter(
 
         val json = objectMapper.writeValueAsString(mappedStructure)
 
-        log.info("TrainingPeaks workout structure={}", json)
-
+        /*
+        * log.info("TrainingPeaks workout structure={}", json)
+        */
         return json
     }
 
