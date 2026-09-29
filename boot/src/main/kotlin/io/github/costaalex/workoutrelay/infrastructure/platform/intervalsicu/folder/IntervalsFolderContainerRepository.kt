@@ -42,7 +42,7 @@ class IntervalsFolderContainerRepository(
 
     private fun createFolder(name: String, startDate: LocalDate?, type: String): FolderDTO {
         val createRequest = CreateFolderRequestDTO(
-            0, name, Signature.description, 0, startDate?.toString(), -1, -1, type
+            0, name, Signature.description(Platform.INTERVALS), 0, startDate?.toString(), -1, -1, type
         )
         return intervalsFolderApiClient.createFolder(
             intervalsConfigurationRepository.getConfiguration().athleteId,

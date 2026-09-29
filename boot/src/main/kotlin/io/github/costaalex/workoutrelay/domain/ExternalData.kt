@@ -67,14 +67,16 @@ data class ExternalData(
         return externalData
     }
 
-    fun toSimpleString(syncedToPlatform: Platform): String {
+    fun toSimpleString(): String {
         val outList = mutableListOf<String>()
-        outList.add("synced to ${syncedToPlatform.title}")
         if (trainingPeaksId != null) outList.add("trainingPeaksId=$trainingPeaksId")
         if (intervalsId != null) outList.add("intervalsId=$intervalsId")
         if (trainerRoadId != null) outList.add("trainerRoadId=$trainerRoadId")
         val simpleString = outList.joinToString(separator = "\n")
-        return "$DESCRIPTION_SEPARATOR\n$simpleString"
+        return """
+                $DESCRIPTION_SEPARATOR
+                $simpleString
+            """.trimIndent()
     }
 
     fun matchesAnyId(other: ExternalData): Boolean {

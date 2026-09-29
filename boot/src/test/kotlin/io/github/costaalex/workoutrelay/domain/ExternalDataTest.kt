@@ -166,38 +166,26 @@ class ExternalDataTest {
     }
 
     @Test
-    fun `should include synced platform when serializing to simple string`() {
+    fun `should serialize to simple string`() {
         val data = ExternalData(null, null, "1085726")
 
-        val result = data.toSimpleString(Platform.TRAINING_PEAKS)
+        val result = data.toSimpleString()
 
         Assertions.assertEquals(
-            "//////////\nsynced to TrainingPeaks\ntrainerRoadId=1085726",
+            "//////////\ntrainerRoadId=1085726",
             result
         )
     }
 
     @Test
-    fun `should include intervals icu title when synced to intervals`() {
-        val data = ExternalData(null, null, "1085726")
+    fun `should serialize all ids to simple string`() {
+        val data = ExternalData("222", "111", "333")
 
-        val result = data.toSimpleString(Platform.INTERVALS)
+        val result = data.toSimpleString()
 
         Assertions.assertEquals(
-            "//////////\nsynced to Intervals.icu\ntrainerRoadId=1085726",
+            "//////////\ntrainingPeaksId=222\nintervalsId=111\ntrainerRoadId=333",
             result
         )
-    }
-
-    @Test
-    fun `should still parse ids when description contains the synced platform line`() {
-        val string = "//////////\nsynced to TrainingPeaks\ntrainerRoadId=1085726"
-
-        var data = ExternalData(null, null, null)
-        data = data.fromSimpleString(string)
-
-        Assertions.assertEquals("1085726", data.trainerRoadId)
-        Assertions.assertNull(data.trainingPeaksId)
-        Assertions.assertNull(data.intervalsId)
     }
 }

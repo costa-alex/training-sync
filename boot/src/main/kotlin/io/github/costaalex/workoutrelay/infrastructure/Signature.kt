@@ -1,9 +1,12 @@
 package io.github.costaalex.workoutrelay.infrastructure
 
+import io.github.costaalex.workoutrelay.domain.Platform
+
 class Signature {
     companion object {
-        val description = """
-            Imported with Workout Relay (https://github.com/costa-alex/workout-relay)
-        """.trimIndent()
+        private const val REPOSITORY_URL = "https://github.com/costa-alex/workout-relay"
+
+        fun description(platform: Platform): String =
+            "Imported to ${platform.title} with Workout Relay ($REPOSITORY_URL)"
     }
 }

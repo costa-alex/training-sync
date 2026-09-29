@@ -4,6 +4,7 @@ import java.time.LocalDate
 import io.github.costaalex.workoutrelay.domain.Platform
 import io.github.costaalex.workoutrelay.domain.activity.Activity
 import io.github.costaalex.workoutrelay.domain.workout.Workout
+import io.github.costaalex.workoutrelay.infrastructure.Signature
 
 class CreateTPWorkoutRequestDTO(
     var athleteId: String,
@@ -24,7 +25,8 @@ class CreateTPWorkoutRequestDTO(
         private fun buildDescription(workout: Workout): String {
             return listOfNotNull(
                 workout.details.description?.takeIf { it.isNotBlank() },
-                workout.details.externalData.toSimpleString(Platform.TRAINING_PEAKS)
+                Signature.description(Platform.TRAINING_PEAKS),
+                workout.details.externalData.toSimpleString()
             ).joinToString("\n\n")
         }
         
