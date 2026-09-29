@@ -18,7 +18,7 @@ class DebugModeService(
     }
 
     fun handleDebugMode(configMap: Map<String, String?>) {
-        if (configMap.contains(generalDebugModeKey) && configMap[generalDebugModeKey]!!.toBoolean()) {
+        if (configMap[generalDebugModeKey]?.toBoolean() == true) {
             setLogLevel(LogLevel.DEBUG)
             return
         }
@@ -33,6 +33,6 @@ class DebugModeService(
     private fun setLogLevel(logLevel: LogLevel) {
         val system: LoggingSystem = LoggingSystem.get(this::class.java.getClassLoader())
         system.setLogLevel("io.github.costaalex.workoutrelay", logLevel)
-        log.error("Log level set to $logLevel")
+        log.info("Log level set to $logLevel")
     }
 }

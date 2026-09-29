@@ -2,7 +2,7 @@
 import {
   computed,
   effect,
-  Inject,
+  inject,
   Injectable,
   OnDestroy,
   signal,
@@ -22,6 +22,7 @@ export class ThemeService implements OnDestroy {
   private readonly systemDarkState = signal(false);
   private readonly view: Window | null;
   private readonly mediaQuery: MediaQueryList | null;
+  private readonly document: Document;
 
   readonly preference = this.preferenceState.asReadonly();
   readonly activeTheme = computed<ActiveTheme>(() => {
@@ -38,9 +39,8 @@ export class ThemeService implements OnDestroy {
     this.systemDarkState.set(event.matches);
   };
 
-  constructor(
-    @Inject(DOCUMENT) private readonly document: Document
-  ) {
+  constructor() {
+    this.document = inject(DOCUMENT);
     this.view = this.document.defaultView;
     this.mediaQuery = this.view?.matchMedia?.('(prefers-color-scheme: dark)') ?? null;
 

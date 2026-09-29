@@ -1,4 +1,4 @@
-import {Component, DestroyRef, OnInit, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {formatDate} from "utils/date-formatter";
@@ -37,7 +37,7 @@ import {Platform} from "infrastructure/platform";
     templateUrl: './tp-copy-calendar-to-library.component.html',
     styleUrl: './tp-copy-calendar-to-library.component.scss'
 })
-export class TpCopyCalendarToLibraryComponent implements OnInit {
+export class TpCopyCalendarToLibraryComponent {
   readonly selectedTrainingTypes = ['BIKE', 'VIRTUAL_BIKE', 'MTB', 'RUN'];
   readonly direction = Platform.DIRECTION_TP_INT
   readonly planType = [
@@ -74,21 +74,28 @@ export class TpCopyCalendarToLibraryComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-  }
+  copyWorkoutsSubmit(): void {
+    if (this.formGroup.invalid) {
+      this.formGroup.markAllAsTouched();
+      return;
+    }
 
-  copyWorkoutsSubmit() {
     this.inProgress = true
-    let name = this.formGroup.value.name
-    let trainingTypes = this.formGroup.value.trainingTypes
-    let startDate = formatDate(this.formGroup.value.startDate)
-    let endDate = formatDate(this.formGroup.value.endDate)
-    let isPlan = this.formGroup.value.isPlan
+    const name = this.formGroup.value.name
+    const trainingTypes = this.formGroup.value.trainingTypes
+    const startDate = formatDate(this.formGroup.value.startDate)
+    const endDate = formatDate(this.formGroup.value.endDate)
+    const isPlan = this.formGroup.value.isPlan
     this.workoutClient.copyCalendarToLibrary(name, startDate, endDate, trainingTypes, this.direction, isPlan).pipe(
       finalize(() => this.inProgress = false),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe((response) => {
-      this.notificationService.copyCalendarToLibraryCompleted(response, name)
+    ).subscribe({
+      next: (response) => {
+        this.notificationService.copyCalendarToLibraryCompleted(response, name)
+      },
+      error: () => {
+        this.notificationService.error('Unable to copy workouts to library.')
+      }
     })
   }
 }

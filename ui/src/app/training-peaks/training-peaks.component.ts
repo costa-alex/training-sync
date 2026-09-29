@@ -1,5 +1,6 @@
 import {Component, DestroyRef, OnInit, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {catchError, of} from 'rxjs';
 import {
   TpCopyCalendarToCalendarComponent
 } from "app/training-peaks/tp-copy-calendar-to-calendar/tp-copy-calendar-to-calendar.component";
@@ -43,7 +44,10 @@ export class TrainingPeaksComponent implements OnInit {
 
   ngOnInit(): void {
     this.configurationClient.platformInfo(Platform.TRAINING_PEAKS.key)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        catchError(() => of({ isValid: false })),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe(value => {
         this.platformInfo = value
       })

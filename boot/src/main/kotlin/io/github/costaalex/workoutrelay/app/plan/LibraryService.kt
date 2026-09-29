@@ -17,17 +17,26 @@ class LibraryService(
     private val planRepositoryMap = planRepositories.associateBy { it.platform() }
 
     fun findByPlatform(platform: Platform): List<LibraryContainer> {
-        val repository = planRepositoryMap[platform]!!
+        val repository = getPlanRepository(platform)
         return repository.getLibraryContainers()
     }
 
     fun copyLibrary(request: CopyLibraryRequest): CopyPlanResponse {
-        val targetPlanRepository = planRepositoryMap[request.targetPlatform]!!
-        val sourceWorkoutRepository = workoutRepositoryMap[request.sourcePlatform]!!
-        val targetWorkoutRepository = workoutRepositoryMap[request.targetPlatform]!!
+        require(request.newName.isNotBlank()) {
+            "Library name cannot be blank"
+        }
+
+        val targetPlanRepository = getPlanRepository(request.targetPlatform)
+        val sourceWorkoutRepository = getWorkoutRepository(request.sourcePlatform)
+        val targetWorkoutRepository = getWorkoutRepository(request.targetPlatform)
 
         val workouts = sourceWorkoutRepository.getWorkoutsFromLibrary(request.libraryContainer)
             .map { it.addWorkoutStepModifier(request.stepModifier) }
+
+        require(workouts.isNotEmpty()) {
+            "Source library has no workouts to copy"
+        }
+
         val newPlan = targetPlanRepository.createLibraryContainer(
             request.newName,
             request.libraryContainer.isPlan,
@@ -38,15 +47,30 @@ class LibraryService(
     }
 
     fun deleteLibrary(request: DeleteLibraryRequest) {
-        val planRepository = planRepositoryMap[request.platform]!!
+        val planRepository = getPlanRepository(request.platform)
         planRepository.deleteLibraryContainer(request.externalData)
     }
 
     fun create(request: CreateLibraryContainerRequest): LibraryContainer {
-        val planRepository = planRepositoryMap[request.platform]!!
+        val planRepository = getPlanRepository(request.platform)
         return planRepository.createLibraryContainer(request.name, false, null)
     }
+
+    private fun getWorkoutRepository(
+        platform: Platform
+    ): WorkoutRepository =
+        checkNotNull(workoutRepositoryMap[platform]) {
+            "No WorkoutRepository registered for platform $platform"
+        }
+
+    private fun getPlanRepository(
+        platform: Platform
+    ): LibraryContainerRepository =
+        checkNotNull(planRepositoryMap[platform]) {
+            "No LibraryContainerRepository registered for platform $platform"
+        }
 
     private fun Workout.addWorkoutStepModifier(stepModifier: StepModifier): Workout =
         Workout(details, date, structure?.addModifier(stepModifier))
 }
+
