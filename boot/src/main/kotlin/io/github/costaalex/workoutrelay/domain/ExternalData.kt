@@ -73,10 +73,7 @@ data class ExternalData(
         if (intervalsId != null) outList.add("intervalsId=$intervalsId")
         if (trainerRoadId != null) outList.add("trainerRoadId=$trainerRoadId")
         val simpleString = outList.joinToString(separator = "\n")
-        return """
-                $DESCRIPTION_SEPARATOR
-                $simpleString
-            """.trimIndent()
+        return "$DESCRIPTION_SEPARATOR\n$simpleString"
     }
 
     fun matchesAnyId(other: ExternalData): Boolean {
