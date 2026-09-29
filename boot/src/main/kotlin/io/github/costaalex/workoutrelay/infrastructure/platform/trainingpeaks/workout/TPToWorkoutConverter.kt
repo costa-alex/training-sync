@@ -56,7 +56,8 @@ class TPToWorkoutConverter {
                 tpWorkout.totalTimePlanned?.let { Duration.ofMinutes((it * 60).toLong()) },
                 tpWorkout.tssPlanned,
                 getWorkoutExternalData(tpWorkout),
-                attachments
+                attachments,
+                tpWorkout.isCompleted(),
             ),
             workoutDate,
             workoutsStructure,

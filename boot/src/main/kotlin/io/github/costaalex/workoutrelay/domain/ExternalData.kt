@@ -67,8 +67,9 @@ data class ExternalData(
         return externalData
     }
 
-    fun toSimpleString(): String {
+    fun toSimpleString(syncedToPlatform: Platform): String {
         val outList = mutableListOf<String>()
+        outList.add("synced to ${syncedToPlatform.title}")
         if (trainingPeaksId != null) outList.add("trainingPeaksId=$trainingPeaksId")
         if (intervalsId != null) outList.add("intervalsId=$intervalsId")
         if (trainerRoadId != null) outList.add("trainerRoadId=$trainerRoadId")

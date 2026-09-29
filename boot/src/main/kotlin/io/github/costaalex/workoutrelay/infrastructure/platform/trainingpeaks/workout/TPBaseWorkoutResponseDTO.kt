@@ -12,8 +12,12 @@ abstract class TPBaseWorkoutResponseDTO(
     val tssPlanned: Int?,
     val description: String?,
     val coachComments: String?,
-    val structure: TPWorkoutStructureDTO?
+    val structure: TPWorkoutStructureDTO?,
+    val totalTime: Double? = null,
+    val tssActual: Int? = null,
 ) {
     fun getWorkoutType(): TrainingType? = workoutTypeValueId?.let { TPTrainingTypeMapper.getByValue(it) }
     fun getWorkoutSubType(): TrainingType? = workoutSubTypeValueId?.let { TPTrainingTypeMapper.getSubtypeByValue(it) }
+
+    fun isCompleted(): Boolean = (totalTime ?: 0.0) > 0.0 || (tssActual ?: 0) > 0
 }

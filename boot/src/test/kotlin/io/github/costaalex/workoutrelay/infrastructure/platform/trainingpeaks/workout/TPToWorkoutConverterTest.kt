@@ -41,4 +41,70 @@ class TPToWorkoutConverterTest {
             logger.detachAppender(appender)
         }
     }
+
+    @Test
+    fun `marks workout as completed when it has actual elapsed time`() {
+        val workout = TPToWorkoutConverter().toWorkout(
+            TPWorkoutCalendarResponseDTO(
+                workoutDay = LocalDateTime.of(2026, 9, 7, 0, 0),
+                workoutId = "3940305210",
+                workoutTypeValueId = 2,
+                workoutSubTypeValueId = null,
+                title = "Lazy Mountain -1",
+                totalTimePlanned = 60.0,
+                tssPlanned = null,
+                description = null,
+                coachComments = null,
+                structure = null,
+                totalTime = 58.5,
+                tssActual = null,
+            )
+        )
+
+        assertThat(workout.details.completed).isTrue()
+    }
+
+    @Test
+    fun `marks workout as completed when it has an actual TSS`() {
+        val workout = TPToWorkoutConverter().toWorkout(
+            TPWorkoutCalendarResponseDTO(
+                workoutDay = LocalDateTime.of(2026, 9, 7, 0, 0),
+                workoutId = "3940305210",
+                workoutTypeValueId = 2,
+                workoutSubTypeValueId = null,
+                title = "Lazy Mountain -1",
+                totalTimePlanned = 60.0,
+                tssPlanned = 50,
+                description = null,
+                coachComments = null,
+                structure = null,
+                totalTime = null,
+                tssActual = 48,
+            )
+        )
+
+        assertThat(workout.details.completed).isTrue()
+    }
+
+    @Test
+    fun `does not mark a planned workout as completed`() {
+        val workout = TPToWorkoutConverter().toWorkout(
+            TPWorkoutCalendarResponseDTO(
+                workoutDay = LocalDateTime.of(2026, 9, 7, 0, 0),
+                workoutId = "3940305210",
+                workoutTypeValueId = 2,
+                workoutSubTypeValueId = null,
+                title = "Lazy Mountain -1",
+                totalTimePlanned = 60.0,
+                tssPlanned = 50,
+                description = null,
+                coachComments = null,
+                structure = null,
+                totalTime = null,
+                tssActual = null,
+            )
+        )
+
+        assertThat(workout.details.completed).isFalse()
+    }
 }

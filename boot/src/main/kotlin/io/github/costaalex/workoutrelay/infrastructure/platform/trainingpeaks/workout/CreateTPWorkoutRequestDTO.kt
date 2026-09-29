@@ -1,6 +1,7 @@
 package io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.workout
 
 import java.time.LocalDate
+import io.github.costaalex.workoutrelay.domain.Platform
 import io.github.costaalex.workoutrelay.domain.activity.Activity
 import io.github.costaalex.workoutrelay.domain.workout.Workout
 
@@ -23,7 +24,7 @@ class CreateTPWorkoutRequestDTO(
         private fun buildDescription(workout: Workout): String {
             return listOfNotNull(
                 workout.details.description?.takeIf { it.isNotBlank() },
-                workout.details.externalData.toSimpleString()
+                workout.details.externalData.toSimpleString(Platform.TRAINING_PEAKS)
             ).joinToString("\n\n")
         }
         

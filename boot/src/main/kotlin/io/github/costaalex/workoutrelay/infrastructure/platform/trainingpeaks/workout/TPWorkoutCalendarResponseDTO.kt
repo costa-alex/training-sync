@@ -13,7 +13,9 @@ class TPWorkoutCalendarResponseDTO(
     tssPlanned: Int?,
     description: String?,
     coachComments: String?,
-    structure: TPWorkoutStructureDTO?
+    structure: TPWorkoutStructureDTO?,
+    totalTime: Double? = null,
+    tssActual: Int? = null,
 ): TPBaseWorkoutResponseDTO(
     workoutId,
     workoutTypeValueId,
@@ -23,5 +25,7 @@ class TPWorkoutCalendarResponseDTO(
     tssPlanned,
     description,
     coachComments,
-    structure
+    structure,
+    totalTime,
+    tssActual,
 )

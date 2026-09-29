@@ -125,6 +125,7 @@ class TrainingPeaksWorkoutRepository(
     ) {
         getWorkoutsFromCalendar(startDate, endDate)
             .filter(::isApplicationManagedTrainerRoadWorkout)
+            .filterNot { it.details.completed }
             .forEach(::deleteWorkoutFromCalendar)
     }
 
@@ -204,6 +205,10 @@ class TrainingPeaksWorkoutRepository(
             ) == true
         ) {
             "Refusing to delete a workout not managed by the application"
+        }
+
+        require(!workout.details.completed) {
+            "Refusing to delete a workout already completed by the athlete"
         }
 
         val userId = trainingPeaksUserRepository.getUser().userId

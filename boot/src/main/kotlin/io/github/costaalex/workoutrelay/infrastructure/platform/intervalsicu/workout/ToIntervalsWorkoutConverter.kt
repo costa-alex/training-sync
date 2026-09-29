@@ -1,7 +1,10 @@
 package io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.workout
 
+import io.github.costaalex.workoutrelay.domain.Platform
+import io.github.costaalex.workoutrelay.domain.TrainingType
 import io.github.costaalex.workoutrelay.domain.librarycontainer.LibraryContainer
 import io.github.costaalex.workoutrelay.domain.workout.Workout
+import io.github.costaalex.workoutrelay.domain.workout.WorkoutDetails
 import io.github.costaalex.workoutrelay.infrastructure.Signature
 import io.github.costaalex.workoutrelay.infrastructure.utils.Date
 import java.time.LocalDate
@@ -22,7 +25,7 @@ class ToIntervalsWorkoutConverter {
         val request = CreateWorkoutRequestDTO(
             libraryContainer.externalData.intervalsId.toString(),
             Date.daysDiff(libraryContainer.startDate, workout.date ?: LocalDate.now()),
-            IntervalsTrainingTypeMapper.getByTrainingType(workout.details.type),
+            IntervalsTrainingTypeMapper.getByTrainingType(resolveIntervalsType(workout.details)),
             name,
             workout.details.duration?.seconds,
             workout.details.load,
@@ -38,7 +41,7 @@ class ToIntervalsWorkoutConverter {
         return CreateEventRequestDTO(
             (workout.date ?: LocalDate.now()).atStartOfDay().toString(),
             workout.details.name,
-            IntervalsTrainingTypeMapper.getByTrainingType(workout.details.type),
+            IntervalsTrainingTypeMapper.getByTrainingType(resolveIntervalsType(workout.details)),
             "WORKOUT",
             description
         )
@@ -53,7 +56,7 @@ class ToIntervalsWorkoutConverter {
         description += workoutString
             ?.let { "\n\n- - - -\n$it" }
             .orEmpty()
-        description += "\n\n${workout.details.externalData.toSimpleString()}"
+        description += "\n\n${workout.details.externalData.toSimpleString(Platform.INTERVALS)}"
         return description
     }
 
@@ -62,5 +65,12 @@ class ToIntervalsWorkoutConverter {
             ToIntervalsStructureConverter(workout.structure).toIntervalsStructureStr()
         } else {
             null
+        }
+
+    private fun resolveIntervalsType(details: WorkoutDetails): TrainingType =
+        if (details.subType == TrainingType.VIRTUAL_BIKE) {
+            TrainingType.VIRTUAL_BIKE
+        } else {
+            details.type
         }
 }

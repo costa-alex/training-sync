@@ -61,6 +61,50 @@ class WorkoutServiceReconciliationRangeTest {
     }
 
     @Test
+    fun `keeps a completed TrainingPeaks workout when TrainerRoad changes the workout for that day`() {
+        val date = LocalDate.of(2026, 9, 10)
+        val sourceWorkout = workout(
+            date = date,
+            name = "New TrainerRoad workout",
+            externalData = ExternalData(null, null, "524179"),
+            structure = workoutStructure(),
+        )
+        val completedTargetWorkout = workout(
+            date = date,
+            name = "Lazy Mountain -1",
+            description = ExternalData.DESCRIPTION_SEPARATOR,
+            externalData = ExternalData("3940305210", null, "524179"),
+            completed = true,
+        )
+        val sourceRepository = FakeWorkoutRepository(
+            Platform.TRAINER_ROAD,
+            mapOf(date to listOf(sourceWorkout)),
+        )
+        val targetRepository = FakeWorkoutRepository(
+            Platform.TRAINING_PEAKS,
+            mapOf(date to listOf(completedTargetWorkout)),
+        )
+        val service = WorkoutService(listOf(sourceRepository, targetRepository), emptyList())
+
+        val response = service.copyWorkoutsC2C(
+            CopyFromCalendarToCalendarRequest(
+                startDate = date,
+                endDate = date,
+                types = listOf(TrainingType.BIKE),
+                skipSynced = true,
+                sourcePlatform = Platform.TRAINER_ROAD,
+                targetPlatform = Platform.TRAINING_PEAKS,
+                replaceChangedWorkouts = true,
+            )
+        )
+
+        assertThat(response.copied).isEqualTo(1)
+        assertThat(response.removed).isZero()
+        assertThat(targetRepository.deletedWorkouts).isEmpty()
+        assertThat(targetRepository.operations).containsExactly("save:524179")
+    }
+
+    @Test
     fun `reconciles TrainerRoad to TrainingPeaks one day at a time`() {
         val firstDate = LocalDate.of(2026, 7, 13)
         val secondDate = firstDate.plusDays(1)
@@ -159,6 +203,7 @@ class WorkoutServiceReconciliationRangeTest {
         description: String? = null,
         externalData: ExternalData,
         structure: WorkoutStructure? = null,
+        completed: Boolean = false,
     ) = Workout(
         details = WorkoutDetails(
             type = TrainingType.BIKE,
@@ -167,7 +212,8 @@ class WorkoutServiceReconciliationRangeTest {
             description = description,
             duration = null,
             load = null,
-            externalData = externalData
+            externalData = externalData,
+            completed = completed,
         ),
         date = date,
         structure = structure,

@@ -280,10 +280,27 @@ class WorkoutService(
         val alreadySynced =
             validSourceWorkouts.size - workoutsToCreate.size
 
-        val workoutsToRemove = managedTargetWorkouts.filter {
+        val candidatesToRemove = managedTargetWorkouts.filter {
             val trainerRoadId = it.details.externalData.trainerRoadId
             trainerRoadId !in sourceTrainerRoadIds ||
                 trainerRoadId in trainerRoadIdsToReplace
+        }
+
+        /*
+        * Medida de segurança:
+        * nunca apagamos do TrainingPeaks um workout já realizado
+        * pelo atleta, mesmo que o TrainerRoad já não o devolva
+        * ou o tenha substituído por outro.
+        */
+        val workoutsToRemove = candidatesToRemove.filterNot { it.details.completed }
+        val protectedFromRemoval = candidatesToRemove.filter { it.details.completed }
+
+        if (protectedFromRemoval.isNotEmpty()) {
+            log.info(
+                "Skipping removal of {} completed TrainingPeaks workout(s) for {} to preserve execution history",
+                protectedFromRemoval.size,
+                request.startDate
+            )
         }
 
         /*
