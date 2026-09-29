@@ -10,7 +10,7 @@ class SignatureTest {
         val description = Signature.description(Platform.TRAINING_PEAKS)
 
         assertThat(description).isEqualTo(
-            "Imported to TrainingPeaks with Workout Relay (https://github.com/costa-alex/workout-relay)"
+            "Synced to TrainingPeaks via Workout Relay (https://github.com/costa-alex/workout-relay)"
         )
     }
 
@@ -19,7 +19,7 @@ class SignatureTest {
         val description = Signature.description(Platform.INTERVALS)
 
         assertThat(description).isEqualTo(
-            "Imported to Intervals.icu with Workout Relay (https://github.com/costa-alex/workout-relay)"
+            "Synced to Intervals.icu via Workout Relay (https://github.com/costa-alex/workout-relay)"
         )
     }
 }

@@ -7,6 +7,6 @@ class Signature {
         private const val REPOSITORY_URL = "https://github.com/costa-alex/workout-relay"
 
         fun description(platform: Platform): String =
-            "Imported to ${platform.title} with Workout Relay ($REPOSITORY_URL)"
+            "Synced to ${platform.title} via Workout Relay ($REPOSITORY_URL)"
     }
 }
