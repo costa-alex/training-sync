@@ -25,7 +25,12 @@
 }
 
 .action-grid button {
-  min-width: 140px;
+  min-width: 90px;
+}
+
+.quick-action-button {
+  --mdc-protected-button-container-color: var(--app-info);
+  --mdc-protected-button-label-text-color: var(--app-on-info);
 }
 
 .single-action button {

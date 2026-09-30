@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added skeleton loading placeholders to the TrainerRoad and TrainingPeaks pages while platform connection status is being checked.
 - Added a "Customized" badge to the Intervals.icu "Advanced properties" section on the Settings page when any range percentage differs from its default value.
 - Added validation to prevent selecting an end date earlier than the start date on calendar-to-library copy forms.
+- Added descriptive tooltips to the "Confirm", "Only today", and "Only tomorrow" calendar-sync buttons.
 
 ### Changed
 
@@ -26,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Removed a hardcoded form-field width that forced desktop-sized inputs on mobile screens.
 - Changed all date pickers to start the week on Monday instead of Sunday.
 - Changed the date-picker display format from `m/d/yyyy` to `dd/mm/yyyy`.
+- Changed the "Only today" and "Only tomorrow" quick-sync buttons to use a distinct blue tone from "Confirm" for easier visual distinction.
 
 ### Fixed
 

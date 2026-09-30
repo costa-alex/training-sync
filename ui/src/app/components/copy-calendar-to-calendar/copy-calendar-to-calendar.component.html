@@ -54,24 +54,30 @@
       color="primary"
       type="button"
       [disabled]="formGroup.invalid || inProgress"
+      matTooltip="Copy workouts for the selected date range and options."
+      matTooltipPosition="above"
       (click)="submit()">
       Confirm
     </button>
 
     <button
       mat-raised-button
-      color="primary"
+      class="quick-action-button"
       type="button"
       [disabled]="formGroup.invalid || inProgress"
+      matTooltip="Copy only today's workouts. For TrainerRoad → TrainingPeaks, a changed workout replaces its previous copy."
+      matTooltipPosition="above"
       (click)="today()">
       Only today
     </button>
 
     <button
       mat-raised-button
-      color="primary"
+      class="quick-action-button"
       type="button"
       [disabled]="formGroup.invalid || inProgress"
+      matTooltip="Copy only tomorrow's workouts. For TrainerRoad → TrainingPeaks, a changed workout replaces its previous copy."
+      matTooltipPosition="above"
       (click)="tomorrow()">
       Only tomorrow
     </button>

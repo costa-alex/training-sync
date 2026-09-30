@@ -43,13 +43,15 @@
           </mat-option>
         }
       </mat-select>
+      <i
+        matSuffix
+        class="bi bi-stars beta-icon"
+        matTooltip="Beta feature"
+        matTooltipPosition="right"></i>
       @if (loadingInProgress) {
         <mat-progress-bar mode="query"></mat-progress-bar>
       }
     </mat-form-field>
-    <i class="bi bi-stars beta-icon"
-      matTooltip="Beta feature"
-    matTooltipPosition="right"></i>
   </div>
 
   <div class="action-button-section">
