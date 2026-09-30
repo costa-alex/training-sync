@@ -57,7 +57,9 @@
             </a>
           </div>
 
-          <mat-form-field class="full-width">
+          <mat-form-field
+            class="full-width"
+            subscriptSizing="dynamic">
             <mat-label>TrainerRoad Auth Cookie</mat-label>
             <input type="password" matInput placeholder="TrainerRoadAuth=very_long_string" formControlName="trainer-road.auth-cookie">
             <mat-hint>
@@ -113,7 +115,9 @@
             </a>
           </div>
 
-          <mat-form-field class="full-width">
+          <mat-form-field
+            class="full-width"
+            subscriptSizing="dynamic">
             <mat-label>TrainingPeaks Auth Cookie</mat-label>
             <input type="password" matInput placeholder="Production_tpAuth=very_long_string" formControlName="training-peaks.auth-cookie">
             <mat-hint>
@@ -155,7 +159,9 @@
             </a>
           </div>
 
-          <mat-form-field class="full-width">
+          <mat-form-field
+            class="full-width"
+            subscriptSizing="dynamic">
             <mat-label>Intervals API Key</mat-label>
             <input matInput type="password" placeholder="123456qwerty123456qwerty1" formControlName="intervals.api-key">
             <mat-hint>
@@ -196,56 +202,56 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="config-card">
-        <mat-card-header>
-          <div
-            mat-card-avatar
-            class="config-icon">
-            <mat-icon>settings</mat-icon>
-          </div>
-
-          <mat-card-title>
-            General
-          </mat-card-title>
-
-          <mat-card-subtitle>
-            Control appearance, diagnostics, and other global options.
-          </mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content class="general-content">
-          <mat-form-field class="theme-field">
-            <mat-label>Theme</mat-label>
-            <mat-icon matPrefix>contrast</mat-icon>
-            <mat-select
-              [value]="themeService.preference()"
-              (selectionChange)="themeService.setPreference($event.value)">
-              <mat-option value="system">System</mat-option>
-              <mat-option value="light">Light</mat-option>
-              <mat-option value="dark">Dark</mat-option>
-            </mat-select>
-            <mat-hint>System follows this device. Saved in this browser.</mat-hint>
-          </mat-form-field>
-
-          <mat-checkbox formControlName="general.debug-mode">
-            Debug Mode
-          </mat-checkbox>
-
-          @if (formGroup.controls['general.debug-mode'].value) {
-            <div class="log-location">
-              <div class="log-location-title">
-                <mat-icon>description</mat-icon>
-                <span>Log location</span>
-              </div>
-              <div class="log-location-list">
-                <div><span>Docker</span><code>~/.config/workout-relay/logs/main.log</code></div>
-              </div>
-            </div>
-          }
-        </mat-card-content>
-      </mat-card>
-
     </div>
+
+    <mat-card class="config-card config-card-wide">
+      <mat-card-header>
+        <div
+          mat-card-avatar
+          class="config-icon">
+          <mat-icon>settings</mat-icon>
+        </div>
+
+        <mat-card-title>
+          General
+        </mat-card-title>
+
+        <mat-card-subtitle>
+          Control appearance, diagnostics, and other global options.
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="general-content">
+        <mat-form-field class="theme-field">
+          <mat-label>Theme</mat-label>
+          <mat-icon matPrefix>contrast</mat-icon>
+          <mat-select
+            [value]="themeService.preference()"
+            (selectionChange)="themeService.setPreference($event.value)">
+            <mat-option value="system">System</mat-option>
+            <mat-option value="light">Light</mat-option>
+            <mat-option value="dark">Dark</mat-option>
+          </mat-select>
+          <mat-hint>System follows this device. Saved in this browser.</mat-hint>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="general.debug-mode">
+          Debug Mode
+        </mat-checkbox>
+
+        @if (formGroup.controls['general.debug-mode'].value) {
+          <div class="log-location">
+            <div class="log-location-title">
+              <mat-icon>description</mat-icon>
+              <span>Log location</span>
+            </div>
+            <div class="log-location-list">
+              <div><span>Docker</span><code>~/.config/workout-relay/logs/main.log</code></div>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
 
     <div class="form-actions">
       <button
