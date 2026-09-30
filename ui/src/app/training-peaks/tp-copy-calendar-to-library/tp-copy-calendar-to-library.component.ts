@@ -12,11 +12,12 @@ import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import {DateAdapter, MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {Platform} from "infrastructure/platform";
+import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
 
 @Component({
     selector: 'tp-copy-calendar-to-library',
@@ -33,6 +34,9 @@ import {Platform} from "infrastructure/platform";
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule
+],
+    providers: [
+    {provide: DateAdapter, useClass: MondayFirstDateAdapter}
 ],
     templateUrl: './tp-copy-calendar-to-library.component.html',
     styleUrl: './tp-copy-calendar-to-library.component.scss'

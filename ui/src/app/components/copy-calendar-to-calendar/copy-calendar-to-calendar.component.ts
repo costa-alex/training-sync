@@ -6,7 +6,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import {DateAdapter, MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -21,6 +21,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {PlatformConnectionMap} from 'infrastructure/client/configuration.client';
+import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
 
 interface TrainingTypeOption {
   title: string;
@@ -49,6 +50,9 @@ interface DirectionOption {
     MatTooltipModule,
     MatIconModule,
     RouterLink
+],
+    providers: [
+    {provide: DateAdapter, useClass: MondayFirstDateAdapter}
 ],
     templateUrl: './copy-calendar-to-calendar.component.html',
     styleUrl: './copy-calendar-to-calendar.component.scss'

@@ -8,7 +8,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { AsyncPipe } from "@angular/common";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import {DateAdapter, MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -25,6 +25,7 @@ import {formatDate} from "utils/date-formatter";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {StepModifier} from "app/training-peaks/tp-copy-library-container/step-modifier";
 import {LibraryContainer} from 'infrastructure/api-models';
+import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
 
 @Component({
     selector: 'tp-copy-library-container',
@@ -43,6 +44,9 @@ import {LibraryContainer} from 'infrastructure/api-models';
     MatCheckboxModule,
     AsyncPipe,
     MatTooltipModule
+],
+    providers: [
+    {provide: DateAdapter, useClass: MondayFirstDateAdapter}
 ],
     templateUrl: './tp-copy-library-container.component.html',
     styleUrl: './tp-copy-library-container.component.scss'

@@ -8,7 +8,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { AsyncPipe } from "@angular/common";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import {DateAdapter, MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -19,6 +19,7 @@ import {LibraryClient} from "infrastructure/client/library-client.service";
 import {Platform} from "infrastructure/platform";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {LibraryContainer, WorkoutDetails} from 'infrastructure/api-models';
+import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
 
 @Component({
     selector: 'tr-copy-library-to-library',
@@ -37,6 +38,9 @@ import {LibraryContainer, WorkoutDetails} from 'infrastructure/api-models';
     MatCheckboxModule,
     AsyncPipe,
     MatAutocompleteModule
+],
+    providers: [
+    {provide: DateAdapter, useClass: MondayFirstDateAdapter}
 ],
     templateUrl: './tr-copy-library-to-library.component.html',
     styleUrl: './tr-copy-library-to-library.component.scss'

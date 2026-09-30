@@ -5,7 +5,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import {DateAdapter, MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -13,6 +13,7 @@ import {Platform} from "infrastructure/platform";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
 import { MatIconModule } from '@angular/material/icon';
+import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
 import {
   CopyCalendarToCalendarComponent
 } from "app/components/copy-calendar-to-calendar/copy-calendar-to-calendar.component";
@@ -35,6 +36,9 @@ import {
         MatDividerModule,
         MatListModule,
         CopyCalendarToCalendarComponent,
+    ],
+    providers: [
+        {provide: DateAdapter, useClass: MondayFirstDateAdapter}
     ],
     templateUrl: './tr-copy-calendar-to-calendar.component.html',
     styleUrl: './tr-copy-calendar-to-calendar.component.scss'
