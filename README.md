@@ -88,11 +88,12 @@ Some TrainingPeaks operations depend on whether the configured account is an ath
 
 - Responsive Angular Material interface designed for desktop and mobile use.
 - Home page with platform connection status and available synchronization routes.
-- Platform-specific pages for TrainerRoad and TrainingPeaks operations.
+- Platform-specific pages for TrainerRoad and TrainingPeaks operations, using a card-based layout consistent with the Home page.
 - Dedicated **Sync Center** page.
 - In-app result notifications with copied, skipped, replaced, and failed workout counts.
 - Version display and release-update indication.
 - Debug mode for detailed troubleshooting logs.
+- Date pickers start the week on Monday and display dates as `dd/mm/yyyy`.
 
 ## Supported synchronization directions
 
