@@ -23,6 +23,7 @@ import {
 } from "app/training-peaks/tp-copy-library-container/tp-copy-plan-warning-dialog/tp-copy-plan-warning-dialog.component";
 import {formatDate} from "utils/date-formatter";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatIconModule} from "@angular/material/icon";
 import {StepModifier} from "app/training-peaks/tp-copy-library-container/step-modifier";
 import {LibraryContainer} from 'infrastructure/api-models';
 import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
@@ -43,7 +44,8 @@ import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
     MatSelectModule,
     MatCheckboxModule,
     AsyncPipe,
-    MatTooltipModule
+    MatTooltipModule,
+    MatIconModule
 ],
     providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
