@@ -24,6 +24,15 @@
     </mat-form-field>
   </div>
 
+  @if (
+    formGroup.hasError('invalidDateRange') &&
+    formGroup.controls['endDate'].touched
+  ) {
+    <div class="period-error">
+      The end date cannot be before the start date.
+    </div>
+  }
+
   <div class="row">
     <mat-form-field id="intervals-plan-name"  class="form-field">
       <mat-label>Name</mat-label>

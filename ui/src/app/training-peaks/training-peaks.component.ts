@@ -14,7 +14,6 @@ import {MatCardModule} from "@angular/material/card";
 
 import {ConfigurationClient, PlatformConnectionInfo} from "infrastructure/client/configuration.client";
 import {Platform} from "infrastructure/platform";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatIconModule} from '@angular/material/icon';
 
@@ -25,7 +24,6 @@ import {MatIconModule} from '@angular/material/icon';
     TpCopyLibraryContainerComponent,
     TpCopyCalendarToLibraryComponent,
     MatCardModule,
-    MatProgressBarModule,
     MatTooltipModule,
     MatIconModule
 ],

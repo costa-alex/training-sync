@@ -16,8 +16,22 @@
     </div>
 
     @if (!platformInfo) {
-      <div class="loading-container">
-        <mat-progress-bar mode="query"></mat-progress-bar>
+      <div class="action-grid">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="app-skeleton-card">
+            <div class="app-skeleton-header">
+              <div class="app-skeleton-avatar app-skeleton-line"></div>
+              <div class="app-skeleton-header-text">
+                <div class="app-skeleton-line app-skeleton-line-title"></div>
+                <div class="app-skeleton-line app-skeleton-line-subtitle"></div>
+              </div>
+            </div>
+            <div class="app-skeleton-body">
+              <div class="app-skeleton-line app-skeleton-line-full"></div>
+              <div class="app-skeleton-line app-skeleton-line-half"></div>
+            </div>
+          </div>
+        }
       </div>
     }
 

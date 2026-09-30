@@ -238,7 +238,7 @@
 
   <section class="automation-section">
     <h2>Sync history</h2>
-    <p class="history-caption">Showing the 10 most recent synchronizations.</p>
+    <p class="history-caption">Showing the {{ executions.length }} most recent synchronizations.</p>
 
     @if (executions.length === 0 && !loading) {
       <div class="empty-state">
@@ -336,6 +336,20 @@
         </mat-card>
       }
     </div>
+
+    @if (hasMoreHistory) {
+      <div class="show-more-container">
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="showMoreHistory()">
+
+          <mat-icon>expand_more</mat-icon>
+          Show more
+
+        </button>
+      </div>
+    }
   </section>
 
 </div>

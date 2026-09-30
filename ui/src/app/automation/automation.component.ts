@@ -123,6 +123,9 @@ export class AutomationComponent implements OnInit {
   executions: SyncExecution[] = [];
   loading = false;
 
+  private allExecutions: SyncExecution[] = [];
+  private historyVisibleCount = HISTORY_DISPLAY_LIMIT;
+
   private readonly destroyRef = inject(DestroyRef);
 
   constructor(
@@ -321,6 +324,15 @@ export class AutomationComponent implements OnInit {
       `${Platform.getTitle(execution.targetPlatform)}`;
   }
 
+  get hasMoreHistory(): boolean {
+    return this.historyVisibleCount < this.allExecutions.length;
+  }
+
+  showMoreHistory(): void {
+    this.historyVisibleCount += HISTORY_DISPLAY_LIMIT;
+    this.executions = this.allExecutions.slice(0, this.historyVisibleCount);
+  }
+
   triggerTitle(
     trigger: SyncExecution['triggerType']
   ): string {
@@ -407,7 +419,9 @@ export class AutomationComponent implements OnInit {
       )
       .subscribe(({ schedules, executions }) => {
         this.schedules = schedules;
-        this.executions = executions.slice(0, HISTORY_DISPLAY_LIMIT);
+        this.allExecutions = executions;
+        this.historyVisibleCount = HISTORY_DISPLAY_LIMIT;
+        this.executions = executions.slice(0, this.historyVisibleCount);
       });
   }
 }

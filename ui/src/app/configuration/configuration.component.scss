@@ -91,6 +91,21 @@
   opacity: 0.72;
 }
 
+.advanced-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 1px 8px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--app-info-container);
+  color: var(--app-info);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
 .checkbox-line {
   display: flex;
   align-items: center;

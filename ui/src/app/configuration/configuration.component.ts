@@ -37,6 +37,13 @@ import {
 import { ThemeService } from 'infrastructure/theme.service';
 import { githubReadmeSectionUrl } from 'infrastructure/external-links';
 
+const ADVANCED_PROPERTY_DEFAULT = 0;
+const ADVANCED_PROPERTY_KEYS = [
+  'intervals.power-range',
+  'intervals.hr-range',
+  'intervals.pace-range'
+];
+
 @Component({
     selector: 'app-configuration',
     imports: [
@@ -143,6 +150,15 @@ export class ConfigurationComponent implements OnInit {
     );
 
     this.loadConfiguration();
+  }
+
+  get hasCustomAdvancedProperties(): boolean {
+    return ADVANCED_PROPERTY_KEYS.some(key => {
+      const value = this.formGroup.controls[key].value;
+      return value !== null &&
+        value !== '' &&
+        Number(value) !== ADVANCED_PROPERTY_DEFAULT;
+    });
   }
 
   onSubmit(): void {

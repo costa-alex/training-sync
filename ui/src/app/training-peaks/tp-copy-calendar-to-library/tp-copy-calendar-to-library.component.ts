@@ -18,6 +18,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {Platform} from "infrastructure/platform";
 import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
+import {dateRangeValidator} from 'utils/date-range-validator';
 
 @Component({
     selector: 'tp-copy-calendar-to-library',
@@ -67,6 +68,8 @@ export class TpCopyCalendarToLibraryComponent {
     startDate: [null, Validators.required],
     endDate: [null, Validators.required],
     isPlan: [true, Validators.required],
+  }, {
+    validators: dateRangeValidator()
   });
   inProgress = false
 

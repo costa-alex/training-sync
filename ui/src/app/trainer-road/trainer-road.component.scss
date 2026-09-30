@@ -2,10 +2,6 @@
   display: block;
 }
 
-.loading-container {
-  margin: 16px 0;
-}
-
 .action-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
