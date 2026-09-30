@@ -30,6 +30,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 const MIN_OFFSET_DAYS = -1;
 const MAX_OFFSET_DAYS = 7;
+const HISTORY_DISPLAY_LIMIT = 10;
 
 
 function integerValidator(
@@ -406,7 +407,7 @@ export class AutomationComponent implements OnInit {
       )
       .subscribe(({ schedules, executions }) => {
         this.schedules = schedules;
-        this.executions = executions;
+        this.executions = executions.slice(0, HISTORY_DISPLAY_LIMIT);
       });
   }
 }
