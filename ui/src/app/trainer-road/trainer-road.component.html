@@ -1,4 +1,4 @@
-<div class="trainer-road-page app-panel-page app-standard-page">
+<div class="trainer-road-page app-standard-page">
 
   <section class="app-page-intro">
     <h1>TrainerRoad</h1>
@@ -16,70 +16,87 @@
     </div>
 
     @if (!platformInfo) {
-      <div class="loading-container app-panel-container">
+      <div class="loading-container">
         <mat-progress-bar mode="query"></mat-progress-bar>
       </div>
     }
 
     @if (platformInfo?.isValid === false) {
       <div
-        class="not-configured app-panel-container app-not-configured">
+        class="not-configured app-not-configured">
         Platform is not configured. Please set required parameters on the Settings page.
       </div>
     }
 
     @if (platformInfo?.isValid) {
-      <div class="content-container app-panel-container">
-        <mat-accordion multi class="action-accordion app-panel-accordion">
-          <mat-expansion-panel class="action-panel app-panel-card">
-            <mat-expansion-panel-header class="action-header app-panel-card-header">
-              <div class="action-header-content app-panel-card-header-content">
-                <div class="action-icon app-panel-card-icon">
-                  <mat-icon>sync</mat-icon>
-                </div>
-                <div class="action-text app-panel-card-text">
-                  <div class="action-title app-panel-card-title">Sync planned workouts</div>
-                  <div class="action-description app-panel-card-description">
-                    Sync your TR planned workouts to another platform.
-                  </div>
-                </div>
-              </div>
-            </mat-expansion-panel-header>
+      <div class="action-grid">
+
+        <mat-card class="action-card">
+          <mat-card-header>
+            <div
+              mat-card-avatar
+              class="action-icon">
+              <mat-icon>sync</mat-icon>
+            </div>
+
+            <mat-card-title>
+              Sync planned workouts
+            </mat-card-title>
+
+            <mat-card-subtitle>
+              Sync your TR planned workouts to another platform.
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
             <tr-copy-calendar-to-calendar></tr-copy-calendar-to-calendar>
-          </mat-expansion-panel>
-          <mat-expansion-panel class="action-panel app-panel-card">
-            <mat-expansion-panel-header class="action-header app-panel-card-header">
-              <div class="action-header-content app-panel-card-header-content">
-                <div class="action-icon app-panel-card-icon">
-                  <mat-icon>fitness_center</mat-icon>
-                </div>
-                <div class="action-text app-panel-card-text">
-                  <div class="action-title app-panel-card-title">Copy workout</div>
-                  <div class="action-description app-panel-card-description">
-                    Copy workouts from the TR library to the Intervals.icu library.
-                  </div>
-                </div>
-              </div>
-            </mat-expansion-panel-header>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card">
+          <mat-card-header>
+            <div
+              mat-card-avatar
+              class="action-icon">
+              <mat-icon>fitness_center</mat-icon>
+            </div>
+
+            <mat-card-title>
+              Copy workout
+            </mat-card-title>
+
+            <mat-card-subtitle>
+              Copy workouts from the TR library to the Intervals.icu library.
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
             <tr-copy-library-to-library></tr-copy-library-to-library>
-          </mat-expansion-panel>
-          <mat-expansion-panel class="action-panel app-panel-card">
-            <mat-expansion-panel-header class="action-header app-panel-card-header">
-              <div class="action-header-content app-panel-card-header-content">
-                <div class="action-icon app-panel-card-icon">
-                  <mat-icon>library_books</mat-icon>
-                </div>
-                <div class="action-text app-panel-card-text">
-                  <div class="action-title app-panel-card-title">Copy planned workouts</div>
-                  <div class="action-description app-panel-card-description">
-                    Copy your TR plan to an Intervals.icu workout library.
-                  </div>
-                </div>
-              </div>
-            </mat-expansion-panel-header>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card">
+          <mat-card-header>
+            <div
+              mat-card-avatar
+              class="action-icon">
+              <mat-icon>library_books</mat-icon>
+            </div>
+
+            <mat-card-title>
+              Copy planned workouts
+            </mat-card-title>
+
+            <mat-card-subtitle>
+              Copy your TR plan to an Intervals.icu workout library.
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
             <tr-copy-calendar-to-library></tr-copy-calendar-to-library>
-          </mat-expansion-panel>
-        </mat-accordion>
+          </mat-card-content>
+        </mat-card>
+
       </div>
     }
   </section>

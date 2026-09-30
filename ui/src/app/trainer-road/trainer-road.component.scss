@@ -1,3 +1,40 @@
 :host {
   display: block;
 }
+
+.loading-container {
+  margin: 16px 0;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--app-border);
+  box-shadow: none;
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-surface-secondary);
+  color: var(--app-primary);
+}
+
+.action-card mat-card-content {
+  flex: 1 1 auto;
+  padding-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+}

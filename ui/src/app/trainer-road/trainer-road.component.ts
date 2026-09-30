@@ -2,7 +2,7 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -22,7 +22,7 @@ import {
 @Component({
     selector: 'app-trainer-road',
     imports: [
-    MatExpansionModule,
+    MatCardModule,
     MatProgressBarModule,
     MatIconModule,
     TrCopyLibraryToLibraryComponent,

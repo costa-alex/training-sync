@@ -10,7 +10,7 @@ import {
 import {
   TpCopyCalendarToLibraryComponent
 } from "app/training-peaks/tp-copy-calendar-to-library/tp-copy-calendar-to-library.component";
-import {MatExpansionModule} from "@angular/material/expansion";
+import {MatCardModule} from "@angular/material/card";
 
 import {ConfigurationClient, PlatformConnectionInfo} from "infrastructure/client/configuration.client";
 import {Platform} from "infrastructure/platform";
@@ -24,7 +24,7 @@ import {MatIconModule} from '@angular/material/icon';
     TpCopyCalendarToCalendarComponent,
     TpCopyLibraryContainerComponent,
     TpCopyCalendarToLibraryComponent,
-    MatExpansionModule,
+    MatCardModule,
     MatProgressBarModule,
     MatTooltipModule,
     MatIconModule
