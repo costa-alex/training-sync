@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -43,6 +44,7 @@ import { githubReadmeSectionUrl } from 'infrastructure/external-links';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatCardModule,
     MatProgressBarModule,
     MatCheckboxModule,
     MatOptionModule,

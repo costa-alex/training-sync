@@ -1,4 +1,4 @@
-<div class="configuration-page app-panel-page app-standard-page">
+<div class="configuration-page app-standard-page">
 
   <section class="app-page-intro">
     <h1>Settings</h1>
@@ -8,13 +8,13 @@
   </section>
 
   @if (inProgress) {
-    <div class="loading-container app-panel-container">
+    <div class="loading-container">
       <mat-progress-bar mode="query"></mat-progress-bar>
     </div>
   }
 
   <form
-    class="content-container app-panel-container"
+    class="content-container"
     [formGroup]="formGroup"
     novalidate
     (ngSubmit)="onSubmit()">
@@ -22,29 +22,30 @@
     <div class="app-section-header">
       <div>
         <h2>Connections and preferences</h2>
-        <p>Open a section to review or update its configuration.</p>
+        <p>Review or update each section's configuration.</p>
       </div>
     </div>
 
-    <mat-accordion multi class="config-accordion app-panel-accordion">
+    <div class="config-grid">
 
-      <mat-expansion-panel class="config-panel app-panel-card" [expanded]="false">
-        <mat-expansion-panel-header class="config-header app-panel-card-header">
-          <div class="config-header-content app-panel-card-header-content">
-            <div class="config-icon app-panel-card-icon">
-              <mat-icon>directions_bike</mat-icon>
-            </div>
-
-            <div class="config-text app-panel-card-text">
-              <h2 class="config-title app-panel-card-title">TrainerRoad</h2>
-              <div class="config-description app-panel-card-description">
-                Configure authentication and workout description options.
-              </div>
-            </div>
+      <mat-card class="config-card">
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="config-icon">
+            <mat-icon>directions_bike</mat-icon>
           </div>
-        </mat-expansion-panel-header>
 
-        <div class="panel-content">
+          <mat-card-title>
+            TrainerRoad
+          </mat-card-title>
+
+          <mat-card-subtitle>
+            Configure authentication and workout description options.
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
           <div class="panel-help">
             <a
               class="help-link"
@@ -80,26 +81,27 @@
               <mat-icon>auto_awesome</mat-icon>
             </span>
           </div>
-        </div>
-      </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-expansion-panel class="config-panel app-panel-card" [expanded]="false">
-        <mat-expansion-panel-header class="config-header app-panel-card-header">
-          <div class="config-header-content app-panel-card-header-content">
-            <div class="config-icon app-panel-card-icon">
-              <mat-icon>timeline</mat-icon>
-            </div>
-
-            <div class="config-text app-panel-card-text">
-              <h2 class="config-title app-panel-card-title">TrainingPeaks</h2>
-              <div class="config-description app-panel-card-description">
-                Add the authentication details used to connect your account.
-              </div>
-            </div>
+      <mat-card class="config-card">
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="config-icon">
+            <mat-icon>timeline</mat-icon>
           </div>
-        </mat-expansion-panel-header>
 
-        <div class="panel-content">
+          <mat-card-title>
+            TrainingPeaks
+          </mat-card-title>
+
+          <mat-card-subtitle>
+            Add the authentication details used to connect your account.
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
           <div class="panel-help">
             <a
               class="help-link"
@@ -121,26 +123,27 @@
               <mat-error>Must be in format Production_tpAuth=[a-zA-Z0-9-_]*</mat-error>
             }
           </mat-form-field>
-        </div>
-      </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-expansion-panel class="config-panel app-panel-card" [expanded]="false">
-        <mat-expansion-panel-header class="config-header app-panel-card-header">
-          <div class="config-header-content app-panel-card-header-content">
-            <div class="config-icon app-panel-card-icon">
-              <mat-icon>monitor_heart</mat-icon>
-            </div>
-
-            <div class="config-text app-panel-card-text">
-              <h2 class="config-title app-panel-card-title">Intervals.icu</h2>
-              <div class="config-description app-panel-card-description">
-                Configure your connection and workout conversion settings.
-              </div>
-            </div>
+      <mat-card class="config-card">
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="config-icon">
+            <mat-icon>monitor_heart</mat-icon>
           </div>
-        </mat-expansion-panel-header>
 
-        <div class="panel-content">
+          <mat-card-title>
+            Intervals.icu
+          </mat-card-title>
+
+          <mat-card-subtitle>
+            Configure your connection and workout conversion settings.
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
           <div class="panel-help">
             <a
               class="help-link"
@@ -190,26 +193,27 @@
               </mat-form-field>
             </mat-expansion-panel>
           </mat-accordion>
-        </div>
-      </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-expansion-panel class="config-panel app-panel-card" [expanded]="true">
-        <mat-expansion-panel-header class="config-header app-panel-card-header">
-          <div class="config-header-content app-panel-card-header-content">
-            <div class="config-icon app-panel-card-icon">
-              <mat-icon>settings</mat-icon>
-            </div>
-
-            <div class="config-text app-panel-card-text">
-              <h2 class="config-title app-panel-card-title">General</h2>
-              <div class="config-description app-panel-card-description">
-                Control appearance, diagnostics, and other global options.
-              </div>
-            </div>
+      <mat-card class="config-card">
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="config-icon">
+            <mat-icon>settings</mat-icon>
           </div>
-        </mat-expansion-panel-header>
 
-        <div class="panel-content general-content">
+          <mat-card-title>
+            General
+          </mat-card-title>
+
+          <mat-card-subtitle>
+            Control appearance, diagnostics, and other global options.
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="general-content">
           <mat-form-field class="theme-field">
             <mat-label>Theme</mat-label>
             <mat-icon matPrefix>contrast</mat-icon>
@@ -234,17 +238,14 @@
                 <span>Log location</span>
               </div>
               <div class="log-location-list">
-                <div><span>Linux</span><code>~/.config/workout-relay/logs/main.log</code></div>
-                <div><span>MacOS</span><code>~/Library/Logs/workout-relay/main.log</code></div>
-                <div><span>Windows</span><code>%USERPROFILE%\AppData\Roaming\workout-relay\logs\main.log</code></div>
-                <div><span>JAR</span><code>./workout-relay.log</code></div>
+                <div><span>Docker</span><code>~/.config/workout-relay/logs/main.log</code></div>
               </div>
             </div>
           }
-        </div>
-      </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
 
-    </mat-accordion>
+    </div>
 
     <div class="form-actions">
       <button

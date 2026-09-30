@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - Replaced the expandable accordion panels on the TrainerRoad and TrainingPeaks pages with a card-based layout matching the Home page, with three action cards per page.
+- Replaced the expandable accordion panels on the Settings page with a card-based layout matching the Home, TrainerRoad, and TrainingPeaks pages, with one card per platform plus a General card.
 - Made action and connection card grids fluid on narrow viewports, removing horizontal scrolling on mobile devices such as iPhone.
 - Removed a hardcoded form-field width that forced desktop-sized inputs on mobile screens.
 - Changed all date pickers to start the week on Monday instead of Sunday.
