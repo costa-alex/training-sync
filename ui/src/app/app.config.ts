@@ -10,7 +10,7 @@ import {
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { DateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { routes } from './app.routes';
 import { httpErrorInterceptor } from 'infrastructure/http.interceptors';
@@ -33,6 +33,7 @@ export const appConfig: ApplicationConfig = {
       ])
     ),
     importProvidersFrom(MatSnackBarModule),
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     { provide: DateAdapter, useClass: MondayFirstDateAdapter }
   ]
 };

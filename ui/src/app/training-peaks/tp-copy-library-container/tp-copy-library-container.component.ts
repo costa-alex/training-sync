@@ -8,7 +8,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { AsyncPipe } from "@angular/common";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {DateAdapter, MatNativeDateModule} from "@angular/material/core";
+import {DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -46,6 +46,7 @@ import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
     MatTooltipModule
 ],
     providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
     {provide: DateAdapter, useClass: MondayFirstDateAdapter}
 ],
     templateUrl: './tp-copy-library-container.component.html',
