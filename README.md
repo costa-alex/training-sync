@@ -1,20 +1,20 @@
-[![CI](https://github.com/costa-alex/workout-relay/actions/workflows/docker.yml/badge.svg)](https://github.com/costa-alex/workout-relay/actions/workflows/docker.yml)
-[![Latest release](https://img.shields.io/github/v/release/costa-alex/workout-relay)](https://github.com/costa-alex/workout-relay/releases/latest)
+[![CI](https://github.com/costa-alex/training-sync/actions/workflows/docker.yml/badge.svg)](https://github.com/costa-alex/training-sync/actions/workflows/docker.yml)
+[![Latest release](https://img.shields.io/github/v/release/costa-alex/training-sync)](https://github.com/costa-alex/training-sync/releases/latest)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
-# Workout Relay
+# TrainingSync
 
-Workout Relay is a self-hosted web application for copying and synchronizing planned workouts between **TrainerRoad**, **TrainingPeaks**, and **Intervals.icu**.
+TrainingSync is a self-hosted web application for copying and synchronizing planned workouts between **TrainerRoad**, **TrainingPeaks**, and **Intervals.icu**.
 
 It provides a responsive, mobile-friendly interface for manual synchronization, workout-library operations, recurring schedules, and synchronization history.
 
-Workout Relay is distributed exclusively as a Docker application. Electron and standalone desktop builds are not supported.
+TrainingSync is distributed exclusively as a Docker application. Electron and standalone desktop builds are not supported.
 
 > This project is independent and is not affiliated with, endorsed by, or sponsored by TrainerRoad, TrainingPeaks, or Intervals.icu. All trademarks belong to their respective owners.
 
 <p>
-  <img src="docs/TP2I_mobile.JPG" alt="Workout Relay mobile interface" width="28%">
-  <img src="docs/TP2TR.JPG" alt="Workout Relay workout synchronization" width="28%">
+  <img src="docs/TP2I_mobile.JPG" alt="TrainingSync mobile interface" width="28%">
+  <img src="docs/TP2TR.JPG" alt="TrainingSync workout synchronization" width="28%">
 </p>
 
 ## Contents
@@ -49,7 +49,7 @@ Workout Relay is distributed exclusively as a Docker application. Electron and s
 
 ### TrainerRoad to TrainingPeaks reconciliation
 
-For selected TrainerRoad → TrainingPeaks operations, Workout Relay can reconcile changed planned workouts instead of only adding another copy.
+For selected TrainerRoad → TrainingPeaks operations, TrainingSync can reconcile changed planned workouts instead of only adding another copy.
 
 This behavior is used by:
 
@@ -59,17 +59,17 @@ This behavior is used by:
 
 Scheduled periods that span more than one day are reconciled independently, one day at a time. This preserves the same safety rules for every date in the configured period.
 
-Workout Relay replaces an application-managed TrainingPeaks workout when the TrainerRoad workout identifier changes. It also repairs a matching workout with the same TrainerRoad identifier when the source now has structured steps but the existing TrainingPeaks copy has no structure.
+TrainingSync replaces an application-managed TrainingPeaks workout when the TrainerRoad workout identifier changes. It also repairs a matching workout with the same TrainerRoad identifier when the source now has structured steps but the existing TrainingPeaks copy has no structure.
 
-For either replacement case, Workout Relay:
+For either replacement case, TrainingSync:
 
 1. creates the new workout in TrainingPeaks;
 2. confirms that the creation succeeded;
 3. removes the previous application-managed TrainingPeaks workout.
 
-Only workouts previously created by Workout Relay, with the expected external identifiers and metadata marker, are eligible for removal. Manually created TrainingPeaks workouts are not removed by this reconciliation process.
+Only workouts previously created by TrainingSync, with the expected external identifiers and metadata marker, are eligible for removal. Manually created TrainingPeaks workouts are not removed by this reconciliation process.
 
-Some TrainerRoad workouts do not include `IntervalData`. When per-second `WorkoutData` is available, Workout Relay groups contiguous linear power segments into compact warm-up, work, and cooldown steps before sending the workout to TrainingPeaks.
+Some TrainerRoad workouts do not include `IntervalData`. When per-second `WorkoutData` is available, TrainingSync groups contiguous linear power segments into compact warm-up, work, and cooldown steps before sending the workout to TrainingPeaks.
 
 The regular **Confirm** action for a custom date range uses normal copy behavior and does not remove replaced workouts.
 
@@ -193,7 +193,7 @@ To obtain it:
 3. Reload TrainingPeaks or open a calendar page.
 4. Select an authenticated request to `tpapi.trainingpeaks.com`.
 5. Copy the request's `Cookie` header or the `Production_tpAuth` cookie value.
-6. Paste it into the Workout Relay Settings page.
+6. Paste it into the TrainingSync Settings page.
 
 The application accepts the complete cookie string and extracts the required value.
 
@@ -216,7 +216,7 @@ To obtain it:
 3. Reload the page or open the TrainerRoad calendar or workout library.
 4. Select an authenticated request to `www.trainerroad.com`.
 5. Copy the request's `Cookie` header or the `SharedTrainerRoadAuth` cookie value.
-6. Paste it into the Workout Relay Settings page.
+6. Paste it into the TrainingSync Settings page.
 
 The **Remove HTML tags from description** option can be enabled if TrainerRoad descriptions contain unwanted markup.
 
@@ -229,23 +229,23 @@ See [`docs/tr_guide.png`](docs/tr_guide.png) for a visual guide.
 The published container image is:
 
 ```text
-ghcr.io/costa-alex/workout-relay:latest
+ghcr.io/costa-alex/training-sync:latest
 ```
 
 Create a directory for the application:
 
 ```bash
-mkdir -p workout-relay/data
-cd workout-relay
+mkdir -p training-sync/data
+cd training-sync
 ```
 
 Create `docker-compose.yml`:
 
 ```yaml
 services:
-  workout-relay:
-    image: ghcr.io/costa-alex/workout-relay:latest
-    container_name: workout-relay
+  training-sync:
+    image: ghcr.io/costa-alex/training-sync:latest
+    container_name: training-sync
     restart: unless-stopped
     environment:
       # Replace with your local IANA timezone.
@@ -271,8 +271,8 @@ services:
 | `JAVA_TOOL_OPTIONS` | JVM default | Use `-Duser.timezone=<IANA timezone>` to control scheduler and history timestamps. |
 | `SCHEDULER_INTERVAL_HOURS` | `1` | Global execution interval for recurring schedules. Accepted values: `1` to `24`. |
 | `SYNC_HISTORY_RETENTION_LIMIT` | `100` | Maximum number of synchronization executions retained in history. |
-| `SPRING_DATASOURCE_URL` | `jdbc:sqlite:/data/workout-relay.sqlite` | SQLite JDBC connection URL. |
-| `LOGGING_FILE_NAME` | `/data/workout-relay.log` | Persistent application log location. |
+| `SPRING_DATASOURCE_URL` | `jdbc:sqlite:/data/training-sync.sqlite` | SQLite JDBC connection URL. |
+| `LOGGING_FILE_NAME` | `/data/training-sync.log` | Persistent application log location. |
 
 Start the application:
 
@@ -293,7 +293,7 @@ Then open **Settings**, enter the credentials for the platforms you use, and sav
 For a more predictable deployment, replace `latest` with a release tag:
 
 ```yaml
-image: ghcr.io/costa-alex/workout-relay:<version>
+image: ghcr.io/costa-alex/training-sync:<version>
 ```
 
 This Compose definition can also be deployed through tools such as Komodo, Portainer, or another Docker-compatible orchestrator.
@@ -318,7 +318,7 @@ docker compose up -d
 Review the logs after updating:
 
 ```bash
-docker compose logs -f --tail=200 workout-relay
+docker compose logs -f --tail=200 training-sync
 ```
 
 Database schema updates are applied automatically by Liquibase when the application starts.
@@ -330,20 +330,20 @@ Database schema updates are applied automatically by Liquibase when the applicat
 From the repository root:
 
 ```bash
-docker build -t workout-relay:local .
+docker build -t training-sync:local .
 ```
 
 Run it:
 
 ```bash
 docker run --rm \
-  --name workout-relay \
+  --name training-sync \
   -p 8098:8080 \
   -e JAVA_TOOL_OPTIONS="-Duser.timezone=Europe/Lisbon" \
   -e SCHEDULER_INTERVAL_HOURS=1 \
   -e SYNC_HISTORY_RETENTION_LIMIT=100 \
   -v "$(pwd)/data:/data" \
-  workout-relay:local
+  training-sync:local
 ```
 
 The application has no separate desktop distribution. The multi-stage Docker build:
@@ -367,8 +367,8 @@ Start the backend from the repository root:
 mkdir -p data
 cd boot
 
-SPRING_DATASOURCE_URL="jdbc:sqlite:../data/workout-relay.sqlite" \
-LOGGING_FILE_NAME="../data/workout-relay.log" \
+SPRING_DATASOURCE_URL="jdbc:sqlite:../data/training-sync.sqlite" \
+LOGGING_FILE_NAME="../data/training-sync.log" \
 SCHEDULER_INTERVAL_HOURS=1 \
 ./gradlew bootRun
 ```
@@ -447,9 +447,9 @@ The release workflow:
 Published images use the following tags:
 
 ```text
-ghcr.io/costa-alex/workout-relay:<version>
-ghcr.io/costa-alex/workout-relay:<release-commit-sha>
-ghcr.io/costa-alex/workout-relay:latest
+ghcr.io/costa-alex/training-sync:<version>
+ghcr.io/costa-alex/training-sync:<release-commit-sha>
+ghcr.io/costa-alex/training-sync:latest
 ```
 
 Use a fixed version tag for predictable deployments. Use `latest` only when automatically following the newest release is intentional.
@@ -459,8 +459,8 @@ Use a fixed version tag for predictable deployments. Use `latest` only when auto
 The `/data` directory contains the persistent application state:
 
 ```text
-/data/workout-relay.sqlite
-/data/workout-relay.log
+/data/training-sync.sqlite
+/data/training-sync.log
 ```
 
 The SQLite database contains platform configuration, schedules, and synchronization history. Protect it because it may contain authentication cookies.
@@ -470,16 +470,16 @@ The SQLite database contains platform configuration, schedules, and synchronizat
 Stop the container before copying the SQLite database:
 
 ```bash
-docker compose stop workout-relay
-cp data/workout-relay.sqlite \
-  "data/workout-relay.sqlite.backup-$(date +%Y%m%d-%H%M%S)"
-docker compose start workout-relay
+docker compose stop training-sync
+cp data/training-sync.sqlite \
+  "data/training-sync.sqlite.backup-$(date +%Y%m%d-%H%M%S)"
+docker compose start training-sync
 ```
 
 Back up the complete data directory if preferred:
 
 ```bash
-tar -czf "workout-relay-data-$(date +%Y%m%d-%H%M%S).tar.gz" data/
+tar -czf "training-sync-data-$(date +%Y%m%d-%H%M%S).tar.gz" data/
 ```
 
 ### Logs
@@ -487,20 +487,20 @@ tar -czf "workout-relay-data-$(date +%Y%m%d-%H%M%S).tar.gz" data/
 Follow container output:
 
 ```bash
-docker compose logs -f --tail=200 workout-relay
+docker compose logs -f --tail=200 training-sync
 ```
 
 Read the persistent application log:
 
 ```bash
-tail -f data/workout-relay.log
+tail -f data/training-sync.log
 ```
 
 Enable **Debug Mode** on the Settings page when additional request and integration details are needed. Disable it again after troubleshooting because debug logs can be verbose and may include sensitive platform information.
 
 ## Security considerations
 
-Workout Relay is intended for self-hosted, trusted environments.
+TrainingSync is intended for self-hosted, trusted environments.
 
 - The application does not currently provide built-in user authentication.
 - Do not expose it directly to the public Internet without an authenticated reverse proxy, VPN, or access-control layer.
@@ -524,7 +524,7 @@ The TrainingPeaks and TrainerRoad integrations depend on web endpoints and sessi
 
 ### TrainingPeaks future dates
 
-TrainingPeaks free accounts may restrict planning workouts on future dates. Workout Relay displays a warning when synchronizing beyond the near-term date range. A TrainingPeaks Premium account may be required for longer future ranges.
+TrainingPeaks free accounts may restrict planning workouts on future dates. TrainingSync displays a warning when synchronizing beyond the near-term date range. A TrainingPeaks Premium account may be required for longer future ranges.
 
 ## Troubleshooting
 
@@ -562,9 +562,9 @@ Replace `Europe/Lisbon` with your local [IANA timezone](https://en.wikipedia.org
 Install the SQLite command-line client on the Docker host and inspect the database while the application is stopped:
 
 ```bash
-docker compose stop workout-relay
-sqlite3 data/workout-relay.sqlite ".tables"
-docker compose start workout-relay
+docker compose stop training-sync
+sqlite3 data/training-sync.sqlite ".tables"
+docker compose start training-sync
 ```
 
 Always create a backup before changing database contents manually.
@@ -585,7 +585,7 @@ See [`docs/har-1.png`](docs/har-1.png) and [`docs/har-2.png`](docs/har-2.png).
 
 ## Project background
 
-This repository is a fork of [Litwilly/tp2intervals](https://github.com/Litwilly/tp2intervals), which is itself based on the original project by [freekode/tp2intervals](https://github.com/freekode/tp2intervals).
+This repository is a fork of [Litwilly/tp2intervals](https://github.com/Litwilly/tp2intervals), which is itself based on the original project by [freekode/tp2intervals](https://github.com/freekode/tp2intervals). It was previously known as **Workout Relay**.
 
 This fork places additional emphasis on TrainerRoad → TrainingPeaks synchronization, including mobile usability, changed-workout reconciliation, persisted automation, and execution history.
 
@@ -609,4 +609,4 @@ Additional discussion about the original project and workout conversion behavior
 
 ## License
 
-Workout Relay is distributed under the [GNU General Public License v3.0](LICENSE).
+TrainingSync is distributed under the [GNU General Public License v3.0](LICENSE).

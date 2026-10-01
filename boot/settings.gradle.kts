@@ -1,1 +1,1 @@
-rootProject.name = "workout-relay"
+rootProject.name = "training-sync"

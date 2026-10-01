@@ -1,0 +1,56 @@
+package io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout
+
+import java.time.LocalDate
+import io.github.costaalex.trainingsync.domain.Platform
+import io.github.costaalex.trainingsync.domain.activity.Activity
+import io.github.costaalex.trainingsync.domain.workout.Workout
+import io.github.costaalex.trainingsync.infrastructure.Signature
+
+class CreateTPWorkoutRequestDTO(
+    var athleteId: String,
+    var workoutDay: LocalDate,
+    var workoutTypeValueId: Int,
+    var workoutSubTypeId: Int,
+    var title: String,
+    var description: String?,
+    var totalTime: Double?,
+    var totalTimePlanned: Double?,
+    var tssActual: Int?,
+    var tssPlanned: Int?,
+    var structure: String?
+) {
+
+    companion object {
+
+        private fun buildDescription(workout: Workout): String {
+            return listOfNotNull(
+                workout.details.description?.takeIf { it.isNotBlank() },
+                Signature.description(Platform.TRAINING_PEAKS),
+                workout.details.externalData.toSimpleString()
+            ).joinToString("\n\n")
+        }
+        
+        fun planWorkout(
+            athleteId: String, workout: Workout, structureStr: String?
+        ): CreateTPWorkoutRequestDTO {
+            return CreateTPWorkoutRequestDTO(
+                athleteId = athleteId,
+                workoutDay = workout.date ?: LocalDate.now(),
+                workoutTypeValueId = TPTrainingTypeMapper.getWorkoutTypeValueId(workout.details.type),
+                workoutSubTypeId = TPTrainingTypeMapper.getWorkoutSubTypeValueId(workout.details.subType),
+                title = workout.details.name,
+                description = buildDescription(workout),
+                totalTime = null,
+                totalTimePlanned = workout.details.duration?.toMinutes()?.toDouble()?.div(60),
+                tssActual = null,
+                tssPlanned = workout.details.load,
+                structure = structureStr
+            )
+        }
+
+        fun createActivity(athleteId: String, activity: Activity): CreateTPWorkoutRequestDTO {
+            TODO("Not yet implemented")
+        }
+
+    }
+}

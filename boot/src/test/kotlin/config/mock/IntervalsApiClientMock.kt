@@ -3,12 +3,12 @@ package config.mock
 import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
 import java.io.InputStream
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.IntervalsActivityDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.IntervalsApiClient
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.activity.CreateActivityResponseDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.workout.CreateEventRequestDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.workout.CreateWorkoutRequestDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.IntervalsActivityDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.IntervalsApiClient
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.activity.CreateActivityResponseDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.CreateEventRequestDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.CreateWorkoutRequestDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
 import org.springframework.web.multipart.MultipartFile
 
 class IntervalsApiClientMock(

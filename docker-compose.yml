@@ -1,7 +1,7 @@
 services:
-  workout-relay:
-    image: ghcr.io/costa-alex/workout-relay:latest
-    container_name: workout-relay
+  training-sync:
+    image: ghcr.io/costa-alex/training-sync:latest
+    container_name: training-sync
     restart: unless-stopped
     environment:
       JAVA_TOOL_OPTIONS: "-Duser.timezone=Europe/Lisbon"

@@ -13,7 +13,7 @@ permissions:
   packages: write
 
 concurrency:
-  group: workout-relay-release
+  group: training-sync-release
   cancel-in-progress: false
 
 jobs:
@@ -141,7 +141,7 @@ jobs:
         id: image
         shell: bash
         run: |
-          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/workout-relay"
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/training-sync"
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
 
       - name: Login to GHCR

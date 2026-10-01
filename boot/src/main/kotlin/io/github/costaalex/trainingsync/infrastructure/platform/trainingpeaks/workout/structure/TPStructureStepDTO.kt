@@ -1,0 +1,30 @@
+package io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout.structure
+
+class TPStructureStepDTO(
+    val type: String?, // step, repetition, rampUp, rampDown
+    val length: TPLengthDTO?,
+    val steps: List<TPStepDTO> = listOf(),
+) {
+    companion object {
+        fun singleStep(stepDTO: TPStepDTO): TPStructureStepDTO =
+            TPStructureStepDTO("step", TPLengthDTO.single(), listOf(stepDTO))
+
+        fun multiStep(repetitions: Int, stepDTOs: List<TPStepDTO>): TPStructureStepDTO =
+            TPStructureStepDTO("repetition", TPLengthDTO.repetitions(repetitions.toLong()), stepDTOs)
+
+        fun rampStep(
+            stepDTO: TPStepDTO,
+            rampUp: Boolean
+        ): TPStructureStepDTO =
+            TPStructureStepDTO(
+                type =
+                    if (rampUp) {
+                        "rampUp"
+                    } else {
+                        "rampDown"
+                    },
+                length = TPLengthDTO.single(),
+                steps = listOf(stepDTO)
+            )
+    }
+}

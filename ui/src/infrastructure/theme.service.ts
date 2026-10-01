@@ -16,7 +16,7 @@ export type ActiveTheme = Exclude<ThemePreference, 'system'>;
   providedIn: 'root'
 })
 export class ThemeService implements OnDestroy {
-  private static readonly storageKey = 'workout-relay.theme';
+  private static readonly storageKey = 'training-sync.theme';
 
   private readonly preferenceState = signal<ThemePreference>('system');
   private readonly systemDarkState = signal(false);

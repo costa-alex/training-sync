@@ -1,0 +1,103 @@
+package io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout
+
+import io.github.costaalex.trainingsync.domain.ExternalData
+import io.github.costaalex.trainingsync.domain.workout.Attachment
+import io.github.costaalex.trainingsync.domain.workout.Workout
+import io.github.costaalex.trainingsync.domain.workout.WorkoutDetails
+import io.github.costaalex.trainingsync.domain.workout.structure.SingleStep
+import io.github.costaalex.trainingsync.domain.workout.structure.WorkoutStructure
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.library.TPWorkoutLibraryItemDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout.structure.FromTPStructureConverter
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+import java.time.Duration
+import java.time.LocalDate
+import io.github.costaalex.trainingsync.domain.TrainingType
+
+@Component
+class TPToWorkoutConverter {
+    private val log = LoggerFactory.getLogger(this.javaClass)
+
+    fun toWorkout(tpWorkout: TPWorkoutCalendarResponseDTO, attachments: List<Attachment> = listOf()): Workout {
+        return toWorkout(tpWorkout, tpWorkout.workoutDay.toLocalDate(), attachments)
+    }
+
+    fun toWorkout(tpWorkout: TPWorkoutLibraryItemDTO, attachments: List<Attachment> = listOf()): Workout {
+        return toWorkout(tpWorkout, LocalDate.now(), attachments)
+    }
+
+    fun toWorkout(tpNote: TPNoteResponseDTO): Workout {
+        return Workout.note(
+            tpNote.noteDate.toLocalDate(),
+            tpNote.title,
+            tpNote.description,
+            ExternalData.empty().withTrainingPeaks(tpNote.id.toString())
+        )
+    }
+
+    private fun toWorkout(tpWorkout: TPBaseWorkoutResponseDTO, workoutDate: LocalDate, attachments: List<Attachment>): Workout {
+        val workoutsStructure = toWorkoutStructure(tpWorkout)
+
+        var description = tpWorkout.description.orEmpty()
+        description += tpWorkout.coachComments?.let { "\n- - - -\n$it" }.orEmpty()
+
+        val workoutType = tpWorkout.getWorkoutType()
+            ?: TrainingType.UNKNOWN
+
+        val workoutSubType = tpWorkout.getWorkoutSubType()
+            ?: workoutType
+
+        return Workout(
+            WorkoutDetails(
+                workoutType,
+                workoutSubType,
+                if (tpWorkout.title.isNullOrBlank()) "Workout" else tpWorkout.title,
+                description,
+                tpWorkout.totalTimePlanned?.let { Duration.ofMinutes((it * 60).toLong()) },
+                tpWorkout.tssPlanned,
+                getWorkoutExternalData(tpWorkout),
+                attachments,
+                tpWorkout.isCompleted(),
+            ),
+            workoutDate,
+            workoutsStructure,
+        )
+    }
+
+    private fun toWorkoutStructure(tpWorkout: TPBaseWorkoutResponseDTO): WorkoutStructure? {
+        val structure = tpWorkout.structure
+        if (structure == null || structure.structure.isEmpty()) {
+            log.debug(
+                "TrainingPeaks workout has no structured steps, id: {}, name: {}",
+                tpWorkout.id,
+                tpWorkout.title,
+            )
+            return null
+        }
+
+        return try {
+            FromTPStructureConverter.toWorkoutStructure(structure).also {
+                log.debug("Read TrainingPeaks workout {}, target preview: {}", tpWorkout.title, targetPreview(it))
+            }
+        } catch (e: IllegalArgumentException) {
+            log.warn(
+                "Invalid TrainingPeaks workout structure, id: {}, name: {}, error: {}",
+                tpWorkout.id,
+                tpWorkout.title,
+                e.message,
+            )
+            null
+        }
+    }
+
+    private fun getWorkoutExternalData(tpWorkout: TPBaseWorkoutResponseDTO): ExternalData {
+        return ExternalData.empty().withTrainingPeaks(tpWorkout.id).fromSimpleString(tpWorkout.description ?: "")
+    }
+
+    private fun targetPreview(structure: WorkoutStructure): String {
+        return structure.steps
+            .filterIsInstance<SingleStep>()
+            .take(8)
+            .joinToString { "${it.name}:${it.target.start}-${it.target.end}" }
+    }
+}

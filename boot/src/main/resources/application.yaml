@@ -14,7 +14,7 @@ app:
 
 spring:
   application:
-    name: workout-relay
+    name: training-sync
   cloud:
     openfeign:
       client:
@@ -26,7 +26,7 @@ spring:
     serialization:
       fail-on-empty-beans: false
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:sqlite:/data/workout-relay.sqlite}
+    url: ${SPRING_DATASOURCE_URL:jdbc:sqlite:/data/training-sync.sqlite}
     driver-class-name: org.sqlite.JDBC
   jpa:
     open-in-view: false
@@ -53,4 +53,4 @@ management:
 
 logging:
   file:
-    name: ${LOGGING_FILE_NAME:/data/workout-relay.log}
+    name: ${LOGGING_FILE_NAME:/data/training-sync.log}

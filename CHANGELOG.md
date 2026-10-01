@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Renamed the application from Workout Relay to **TrainingSync**.
+- Renamed the Gradle project, JAR, Spring application, Docker service, container image, GitHub repository, Kotlin base package (`io.github.costaalex.trainingsync`), and npm package.
+- Updated application branding, metadata, documentation, CI, and release workflows.
 - Replaced the expandable accordion panels on the TrainerRoad and TrainingPeaks pages with a card-based layout matching the Home page, with three action cards per page.
 - Replaced the expandable accordion panels on the Settings page with a card-based layout matching the Home, TrainerRoad, and TrainingPeaks pages, with one card per platform plus a General card.
 - Made action and connection card grids fluid on narrow viewports, removing horizontal scrolling on mobile devices such as iPhone.
@@ -28,6 +31,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Changed all date pickers to start the week on Monday instead of Sunday.
 - Changed the date-picker display format from `m/d/yyyy` to `dd/mm/yyyy`.
 - Changed the "Only today" and "Only tomorrow" quick-sync buttons to use a distinct blue tone from "Confirm" for easier visual distinction.
+
+### Migration
+
+- The default SQLite database filename changed from `workout-relay.sqlite` to `training-sync.sqlite`, and the default log filename changed from `workout-relay.log` to `training-sync.log`. Existing deployments relying on the defaults must rename the files in `/data` (or set `SPRING_DATASOURCE_URL`/`LOGGING_FILE_NAME` explicitly) before starting the new version.
+- The Docker image moved to `ghcr.io/costa-alex/training-sync`. Update `docker-compose.yml` and any pull/deployment scripts accordingly.
+- The browser's stored theme preference (`localStorage`) uses a new key; users will see their theme reset to System once after upgrading.
 
 ### Fixed
 

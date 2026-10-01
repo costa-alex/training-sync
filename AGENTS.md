@@ -2,9 +2,9 @@
 
 ## Purpose
 
-This file provides repository-specific guidance for coding agents and contributors working on Workout Relay.
+This file provides repository-specific guidance for coding agents and contributors working on TrainingSync.
 
-Workout Relay is a self-hosted web application that synchronizes planned workouts between TrainerRoad, TrainingPeaks, and Intervals.icu. The production distribution is a Docker image containing an Angular frontend and a Kotlin/Spring Boot backend.
+TrainingSync is a self-hosted web application that synchronizes planned workouts between TrainerRoad, TrainingPeaks, and Intervals.icu. The production distribution is a Docker image containing an Angular frontend and a Kotlin/Spring Boot backend.
 
 ---
 
@@ -160,8 +160,8 @@ The runtime data directory is:
 Important files include:
 
 ```text
-/data/workout-relay.sqlite
-/data/workout-relay.log
+/data/training-sync.sqlite
+/data/training-sync.log
 ```
 
 The database can contain platform authentication cookies and API keys. Treat it and all backups as sensitive.
@@ -361,7 +361,7 @@ cd boot
 The expected JAR is:
 
 ```text
-boot/build/libs/workout-relay.jar
+boot/build/libs/training-sync.jar
 ```
 
 ### Backend development server
@@ -370,8 +370,8 @@ boot/build/libs/workout-relay.jar
 mkdir -p data
 cd boot
 
-SPRING_DATASOURCE_URL="jdbc:sqlite:../data/workout-relay.sqlite" \
-LOGGING_FILE_NAME="../data/workout-relay.log" \
+SPRING_DATASOURCE_URL="jdbc:sqlite:../data/training-sync.sqlite" \
+LOGGING_FILE_NAME="../data/training-sync.log" \
 SCHEDULER_INTERVAL_HOURS=1 \
 SYNC_HISTORY_RETENTION_LIMIT=100 \
 ./gradlew bootRun
@@ -413,14 +413,14 @@ The Angular development server uses the configured proxy for backend API and Act
 ### Complete Docker image
 
 ```bash
-docker build -t workout-relay:local .
+docker build -t training-sync:local .
 ```
 
 ### Docker Compose
 
 ```bash
 docker compose up -d
-docker compose logs -f --tail=200 workout-relay
+docker compose logs -f --tail=200 training-sync
 ```
 
 ---

@@ -2,12 +2,12 @@ package config.mock
 
 import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
-import io.github.costaalex.workoutrelay.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
-import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.workout.CreateTPWorkoutRequestDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.workout.TPNoteResponseDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.workout.TPWorkoutCalendarResponseDTO
-import io.github.costaalex.workoutrelay.infrastructure.platform.trainingpeaks.workout.TPWorkoutDetailsResponseDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.TrainingPeaksApiClient
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout.CreateTPWorkoutRequestDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout.TPNoteResponseDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout.TPWorkoutCalendarResponseDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.trainingpeaks.workout.TPWorkoutDetailsResponseDTO
 import org.springframework.core.io.Resource
 import java.io.InputStream
 
