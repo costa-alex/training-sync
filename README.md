@@ -8,7 +8,7 @@ TrainingSync is a self-hosted web application for copying and synchronizing plan
 
 It provides a responsive, mobile-friendly interface for manual synchronization, workout-library operations, recurring schedules, and synchronization history.
 
-TrainingSync is distributed exclusively as a Docker application. Electron and standalone desktop builds are not supported.
+TrainingSync is distributed exclusively as a Docker application.
 
 > This project is independent and is not affiliated with, endorsed by, or sponsored by TrainerRoad, TrainingPeaks, or Intervals.icu. All trademarks belong to their respective owners.
 
