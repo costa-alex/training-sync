@@ -270,26 +270,28 @@
                 </div>
               </div>
 
-              <span
-                class="execution-status"
-                [class.status-success]="execution.status === 'SUCCESS'"
-                [class.status-no-changes]="execution.status === 'NO_CHANGES'"
-                [class.status-partial]="execution.status === 'PARTIAL_SUCCESS'"
-                [class.status-failed]="execution.status === 'FAILED'"
-                [class.status-running]="execution.status === 'RUNNING'"
-                [class.status-interrupted]="execution.status === 'INTERRUPTED'">
+              <div class="history-badges">
+                @if (execution.weightSynced) {
+                  <span class="weight-synced-badge">
+                    <mat-icon inline="true">monitor_weight</mat-icon>
+                    <span>Weight updated on TrainerRoad</span>
+                  </span>
+                }
 
-                {{ statusTitle(execution.status) }}
+                <span
+                  class="execution-status"
+                  [class.status-success]="execution.status === 'SUCCESS'"
+                  [class.status-no-changes]="execution.status === 'NO_CHANGES'"
+                  [class.status-partial]="execution.status === 'PARTIAL_SUCCESS'"
+                  [class.status-failed]="execution.status === 'FAILED'"
+                  [class.status-running]="execution.status === 'RUNNING'"
+                  [class.status-interrupted]="execution.status === 'INTERRUPTED'">
 
-              </span>
-            </div>
+                  {{ statusTitle(execution.status) }}
 
-            @if (execution.weightSynced) {
-              <div class="weight-synced-badge">
-                <mat-icon inline="true">monitor_weight</mat-icon>
-                <span>Weight updated on TrainerRoad</span>
+                </span>
               </div>
-            }
+            </div>
 
             <div class="history-period">
               <span class="detail-label">Period</span>

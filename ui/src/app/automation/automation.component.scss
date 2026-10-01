@@ -167,6 +167,13 @@
   gap: 16px;
 }
 
+.history-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .history-meta {
   margin-top: 4px;
   font-size: 0.85rem;
@@ -213,10 +220,10 @@
 }
 
 .weight-synced-badge {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 10px;
   padding: 4px 9px;
   border-radius: 12px;
   font-size: 0.78rem;

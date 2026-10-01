@@ -14,9 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody
     configuration = [TrainerRoadApiClientConfig::class]
 )
 interface TrainerRoadRiderInformationApiClient {
-    @GetMapping("/app/api/profile/rider-information")
+    @GetMapping(
+        value = ["/app/api/profile/rider-information"],
+        headers = ["trainerroad-jsonformat=camel-case"]
+    )
     fun getRiderInformation(): Map<String, Any?>?
 
-    @PutMapping("/app/api/profile/rider-information")
+    @PutMapping(
+        value = ["/app/api/profile/rider-information"],
+        headers = ["trainerroad-jsonformat=camel-case"]
+    )
     fun updateRiderInformation(@RequestBody riderInformation: Map<String, Any?>)
 }
