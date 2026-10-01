@@ -13,8 +13,10 @@ TrainingSync is distributed exclusively as a Docker application. Electron and st
 > This project is independent and is not affiliated with, endorsed by, or sponsored by TrainerRoad, TrainingPeaks, or Intervals.icu. All trademarks belong to their respective owners.
 
 <p>
-  <img src="docs/TP2I_mobile.JPG" alt="TrainingSync mobile interface" width="28%">
-  <img src="docs/TP2TR.JPG" alt="TrainingSync workout synchronization" width="28%">
+  <img src="docs/TS_Home.JPG" alt="TrainingSync interface" width="28%">
+  <img src="docs/TS_TR.JPG" alt="TrainerRoad actions" width="28%">
+  <img src="docs/TS_SC.JPG" alt="TrainingSync Sync Center" width="28%">
+  <img src="docs/TS_S.JPG" alt="TrainingSync settings" width="28%">
 </p>
 
 ## Contents
