@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: fix-weight-synced-null-values
+      author: tp2intervals
+      changes:
+        - update:
+            tableName: sync_executions
+            columns:
+              - column:
+                  name: weight_synced
+                  valueBoolean: false
+            where: weight_synced IS NULL
