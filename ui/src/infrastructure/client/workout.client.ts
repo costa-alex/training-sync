@@ -38,6 +38,7 @@ export interface SyncExecution {
   failed: number;
   failedToRemove: number;
   errorMessage?: string;
+  weightSynced: boolean;
 }
 
 @Injectable({

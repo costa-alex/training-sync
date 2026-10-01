@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-weight-synced-column
+      author: tp2intervals
+      changes:
+        - addColumn:
+            tableName: sync_executions
+            columns:
+              - column:
+                  name: weight_synced
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

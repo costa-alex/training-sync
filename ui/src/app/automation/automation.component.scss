@@ -212,6 +212,25 @@
   background: var(--app-warning-container);
 }
 
+.weight-synced-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 9px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--app-info-container);
+  color: var(--app-info);
+}
+
+.weight-synced-badge mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
 .history-period {
   display: grid;
   grid-template-columns: 100px 1fr;

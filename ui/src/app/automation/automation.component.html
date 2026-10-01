@@ -284,6 +284,13 @@
               </span>
             </div>
 
+            @if (execution.weightSynced) {
+              <div class="weight-synced-badge">
+                <mat-icon inline="true">monitor_weight</mat-icon>
+                <span>Weight updated on TrainerRoad</span>
+              </div>
+            }
+
             <div class="history-period">
               <span class="detail-label">Period</span>
 

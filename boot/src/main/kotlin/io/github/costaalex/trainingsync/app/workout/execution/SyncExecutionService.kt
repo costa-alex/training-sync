@@ -98,7 +98,12 @@ class SyncExecutionService(
                 )
             }
 
-            weightSyncService.syncWeightIfEnabled()
+            weightSyncService.syncWeightIfEnabled().let { weightSynced ->
+                if (weightSynced) {
+                    execution.weightSynced = true
+                    syncExecutionRepository.save(execution)
+                }
+            }
         }
     }
 

@@ -23,31 +23,32 @@ class WeightSyncService(
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    fun syncWeightIfEnabled() {
-        try {
+    fun syncWeightIfEnabled(): Boolean {
+        return try {
             syncWeight()
         } catch (exception: Exception) {
             log.warn(
                 "Unable to sync weight from Intervals.icu to TrainerRoad",
                 exception
             )
+            false
         }
     }
 
-    private fun syncWeight() {
+    private fun syncWeight(): Boolean {
         val intervalsConfig =
             try {
                 intervalsConfigurationRepository.getConfiguration()
             } catch (exception: Exception) {
-                return
+                return false
             }
 
         if (!intervalsConfig.syncWeightToTrainerRoad) {
-            return
+            return false
         }
 
         if (!trainerRoadConfigurationRepository.getConfiguration().canValidate()) {
-            return
+            return false
         }
 
         val wellness = intervalsApiClient.getWellness(
@@ -55,11 +56,11 @@ class WeightSyncService(
             LocalDate.now().toString()
         )
 
-        val intervalsWeight = wellness?.weight ?: return
+        val intervalsWeight = wellness?.weight ?: return false
 
         val riderInformation =
             trainerRoadRiderInformationApiClient.getRiderInformation()
-                ?: return
+                ?: return false
 
         val currentWeight =
             (riderInformation[WEIGHT_KG_FIELD] as? Number)?.toDouble()
@@ -68,7 +69,7 @@ class WeightSyncService(
             currentWeight != null &&
             abs(currentWeight - intervalsWeight) < WEIGHT_TOLERANCE_KG
         ) {
-            return
+            return false
         }
 
         trainerRoadRiderInformationApiClient.updateRiderInformation(
@@ -76,5 +77,7 @@ class WeightSyncService(
         )
 
         log.info("Updated TrainerRoad weight from Intervals.icu wellness data")
+
+        return true
     }
 }
