@@ -120,6 +120,12 @@
   color: var(--app-text-muted);
 }
 
+.weight-sync-hint {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: var(--app-text-muted);
+}
+
 .general-content {
   display: flex;
   flex-direction: column;

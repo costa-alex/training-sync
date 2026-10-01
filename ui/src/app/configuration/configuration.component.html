@@ -196,6 +196,17 @@
               </mat-form-field>
             </mat-expansion-panel>
           </mat-accordion>
+
+          <div class="checkbox-line">
+            <mat-checkbox formControlName="intervals.sync-weight-to-trainer-road">
+              Sync Weight to TrainerRoad?
+            </mat-checkbox>
+          </div>
+          @if (!canSyncWeightToTrainerRoad) {
+            <p class="weight-sync-hint">
+              Requires both Intervals.icu and TrainerRoad to be connected.
+            </p>
+          }
         </mat-card-content>
       </mat-card>
 

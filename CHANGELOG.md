@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added a "Customized" badge to the Intervals.icu "Advanced properties" section on the Settings page when any range percentage differs from its default value.
 - Added validation to prevent selecting an end date earlier than the start date on calendar-to-library copy forms.
 - Added descriptive tooltips to the "Confirm", "Only today", and "Only tomorrow" calendar-sync buttons.
+- Added an optional "Sync Weight to TrainerRoad?" setting on the Intervals.icu Settings card. When enabled, every calendar synchronization also pushes today's Intervals.icu wellness weight to TrainerRoad's rider information if it differs from the currently stored value. Requires both Intervals.icu and TrainerRoad to be connected.
 
 ### Changed
 

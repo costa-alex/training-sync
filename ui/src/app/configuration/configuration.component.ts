@@ -32,10 +32,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { ConfigData } from 'infrastructure/config-data';
 import { NotificationService } from 'infrastructure/notification.service';
 import {
-  ConfigurationClient
+  ConfigurationClient,
+  PlatformConnectionMap
 } from 'infrastructure/client/configuration.client';
 import { ThemeService } from 'infrastructure/theme.service';
 import { githubReadmeSectionUrl } from 'infrastructure/external-links';
+import { Platform } from 'infrastructure/platform';
 
 const ADVANCED_PROPERTY_DEFAULT = 0;
 const ADVANCED_PROPERTY_KEYS = [
@@ -116,6 +118,10 @@ export class ConfigurationComponent implements OnInit {
       null,
       Validators.required
     ],
+    'intervals.sync-weight-to-trainer-road': [
+      null,
+      Validators.required
+    ],
     'general.debug-mode': [
       null,
       Validators.required
@@ -123,6 +129,8 @@ export class ConfigurationComponent implements OnInit {
   });
 
   inProgress = false;
+
+  platformInfo: PlatformConnectionMap = {};
 
   readonly helpLinks = {
     trainerRoad: githubReadmeSectionUrl('trainerroad'),
@@ -150,6 +158,7 @@ export class ConfigurationComponent implements OnInit {
     );
 
     this.loadConfiguration();
+    this.loadPlatformConnections();
   }
 
   get hasCustomAdvancedProperties(): boolean {
@@ -159,6 +168,11 @@ export class ConfigurationComponent implements OnInit {
         value !== '' &&
         Number(value) !== ADVANCED_PROPERTY_DEFAULT;
     });
+  }
+
+  get canSyncWeightToTrainerRoad(): boolean {
+    return this.platformInfo[Platform.INTERVALS.key]?.isValid === true &&
+      this.platformInfo[Platform.TRAINER_ROAD.key]?.isValid === true;
   }
 
   onSubmit(): void {
@@ -213,6 +227,35 @@ export class ConfigurationComponent implements OnInit {
         // The HTTP interceptor already displayed the error.
       }
     });
+  }
+
+  private loadPlatformConnections(): void {
+    this.configClient
+      .getAllPlatformInfo()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: platformInfo => {
+          this.platformInfo = platformInfo;
+          this.updateSyncWeightControlState();
+        },
+        error: () => {
+          this.platformInfo = {};
+          this.updateSyncWeightControlState();
+        }
+      });
+  }
+
+  private updateSyncWeightControlState(): void {
+    const control =
+      this.formGroup.controls['intervals.sync-weight-to-trainer-road'];
+
+    if (this.canSyncWeightToTrainerRoad) {
+      control.enable({ emitEvent: false });
+    } else {
+      control.disable({ emitEvent: false });
+    }
   }
 
   private listenCookie(

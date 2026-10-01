@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: _
+      author: _
+      changes:
+        - insert:
+            tableName: config
+            columns:
+              - column:
+                  name: key
+                  value: 'intervals.sync-weight-to-trainer-road'
+
+              - column:
+                  name: value
+                  value: 'false'

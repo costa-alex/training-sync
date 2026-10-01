@@ -10,6 +10,7 @@ data class IntervalsConfiguration(
     val powerRange: Float,
     val hrRange: Float,
     val paceRange: Float,
+    val syncWeightToTrainerRoad: Boolean = false,
 ) {
     companion object {
         private val apiKeyConfigKey = "${Platform.INTERVALS.key}.api-key"
@@ -17,6 +18,7 @@ data class IntervalsConfiguration(
         private val powerRangeConfigKey = "${Platform.INTERVALS.key}.power-range"
         private val hrRangeConfigKey = "${Platform.INTERVALS.key}.hr-range"
         private val paceRangeConfigKey = "${Platform.INTERVALS.key}.pace-range"
+        private val syncWeightToTrainerRoadConfigKey = "${Platform.INTERVALS.key}.sync-weight-to-trainer-road"
     }
 
     constructor(appConfiguration: AppConfiguration) : this(appConfiguration.configMap)
@@ -27,6 +29,7 @@ data class IntervalsConfiguration(
         map[powerRangeConfigKey]!!.toFloat(),
         map[hrRangeConfigKey]!!.toFloat(),
         map[paceRangeConfigKey]!!.toFloat(),
+        map[syncWeightToTrainerRoadConfigKey].toBoolean(),
     ) {
         val wrongValues = map.entries
             .filter { it.value.isNullOrBlank() }

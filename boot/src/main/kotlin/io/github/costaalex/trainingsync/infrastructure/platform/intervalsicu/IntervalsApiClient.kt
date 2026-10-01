@@ -1,6 +1,7 @@
 package io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu
 
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.activity.CreateActivityResponseDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.wellness.IntervalsWellnessDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.CreateEventRequestDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.CreateWorkoutRequestDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
@@ -65,4 +66,10 @@ interface IntervalsApiClient {
         @PathVariable name: String,
         @RequestPart("file") file: MultipartFile
     ): CreateActivityResponseDTO
+
+    @GetMapping("/api/v1/athlete/{athleteId}/wellness/{date}")
+    fun getWellness(
+        @PathVariable athleteId: String,
+        @PathVariable date: String,
+    ): IntervalsWellnessDTO?
 }
