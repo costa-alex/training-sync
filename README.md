@@ -86,6 +86,18 @@ The application also supports operations beyond calendar-to-calendar synchroniza
 
 Some TrainingPeaks operations depend on whether the configured account is an athlete or coach account.
 
+### Weight synchronization
+
+TrainingSync can optionally keep your TrainerRoad rider weight in sync with your Intervals.icu wellness data.
+
+When enabled, every calendar synchronization (manual, scheduled, or **Run now**) also:
+
+1. reads today's weight from your Intervals.icu wellness entry;
+2. compares it with the weight currently stored in your TrainerRoad rider information;
+3. updates TrainerRoad only if the two values differ.
+
+This feature requires both **Intervals.icu** and **TrainerRoad** to be configured and connected. It is controlled by the **Sync Weight to TrainerRoad?** checkbox on the Intervals.icu Settings card, which is only enabled once both platforms are connected.
+
 ### User interface
 
 - Responsive Angular Material interface designed for desktop and mobile use.
@@ -146,7 +158,8 @@ Calendar-to-calendar executions are stored and displayed on the Sync Center page
 - processed date range;
 - copied, removed, skipped, and failed counts;
 - execution status;
-- available error details.
+- available error details;
+- whether the TrainerRoad weight was updated during that run (see [Weight synchronization](#weight-synchronization)).
 
 Possible statuses are:
 
@@ -177,6 +190,8 @@ Configure:
 - **Athlete ID**, usually in a format such as `i12345`
 
 Advanced settings are also available for power, heart-rate, and pace range percentages used when converting workout targets.
+
+The **Sync Weight to TrainerRoad?** checkbox enables the [weight synchronization](#weight-synchronization) feature described above. It is only available once both Intervals.icu and TrainerRoad are configured and connected.
 
 ### TrainingPeaks
 
