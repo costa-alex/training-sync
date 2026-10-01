@@ -6,6 +6,7 @@ import java.io.InputStream
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.IntervalsActivityDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.IntervalsApiClient
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.activity.CreateActivityResponseDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.wellness.IntervalsWellnessDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.CreateEventRequestDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.CreateWorkoutRequestDTO
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.workout.IntervalsEventDTO
@@ -42,6 +43,10 @@ class IntervalsApiClientMock(
     }
 
     override fun createActivity(athleteId: String, name: String, file: MultipartFile): CreateActivityResponseDTO {
+        TODO("Not yet implemented")
+    }
+
+    override fun getWellness(athleteId: String, date: String): IntervalsWellnessDTO? {
         TODO("Not yet implemented")
     }
 }
