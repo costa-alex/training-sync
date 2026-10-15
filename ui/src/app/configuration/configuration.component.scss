@@ -59,17 +59,6 @@
   opacity: 1;
 }
 
-.help-link mat-icon,
-.advanced-title mat-icon,
-.beta-indicator,
-.beta-indicator mat-icon,
-.tooltip-help-icon mat-icon,
-.log-location-title mat-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-}
-
 .full-width {
   width: 100%;
 }
@@ -111,7 +100,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 .beta-indicator {
