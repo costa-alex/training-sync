@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Added a TrainerRoad Settings checkbox to enable or disable association of uniquely matching completed activities with scheduled workouts.
 - Automatically associate uniquely matching completed TrainerRoad activities with their planned workouts when reading the TrainerRoad calendar.
 - Show a Sync history badge when completed workouts are associated with planned TrainerRoad workouts.
 - Added a "Show more" button to the Sync Center history list, which initially displays the 10 most recent synchronizations.

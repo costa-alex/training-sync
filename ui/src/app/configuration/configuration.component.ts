@@ -118,6 +118,10 @@ export class ConfigurationComponent implements OnInit {
       null,
       Validators.required
     ],
+    'trainer-road.associate-completed-workouts': [
+      null,
+      Validators.required
+    ],
     'intervals.sync-weight-to-trainer-road': [
       null,
       Validators.required

@@ -81,6 +81,20 @@
               <mat-icon>auto_awesome</mat-icon>
             </span>
           </div>
+
+          <div class="checkbox-line">
+            <mat-checkbox formControlName="trainer-road.associate-completed-workouts">
+              Match completed workouts with scheduled workouts
+            </mat-checkbox>
+            <span
+              class="tooltip-help-icon"
+              matTooltip="When reading the TrainerRoad calendar, uniquely matching completed activities are linked to scheduled workouts with the same date and workout name."
+              matTooltipPosition="right"
+              aria-label="Completed workout association details"
+              tabindex="0">
+              <mat-icon>info_outline</mat-icon>
+            </span>
+          </div>
         </mat-card-content>
       </mat-card>
 

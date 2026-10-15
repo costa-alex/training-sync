@@ -65,13 +65,19 @@ class TrainerRoadApiClientService(
                     ?.let { PlannedWorkout(plannedActivity.id, it) }
             }
 
-        val associatedWorkouts = associateCompletedActivities(
-            timeline,
-            plannedWorkouts,
-            memberId,
-            startDate,
-            endDate,
-        )
+        val associatedWorkouts = if (
+            trainerRoadConfigurationRepository.getConfiguration().associateCompletedWorkouts
+        ) {
+            associateCompletedActivities(
+                timeline,
+                plannedWorkouts,
+                memberId,
+                startDate,
+                endDate,
+            )
+        } else {
+            0
+        }
         return WorkoutCalendarResult(
             workouts = plannedWorkouts.map { it.workout },
             associatedWorkouts = associatedWorkouts,

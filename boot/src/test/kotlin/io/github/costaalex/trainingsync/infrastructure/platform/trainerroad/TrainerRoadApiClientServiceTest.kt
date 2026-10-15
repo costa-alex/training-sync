@@ -5,6 +5,7 @@ import io.github.costaalex.trainingsync.domain.ExternalData
 import io.github.costaalex.trainingsync.domain.TrainingType
 import io.github.costaalex.trainingsync.domain.workout.WorkoutDetails
 import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.activity.TrainerRoadActivityDTO
+import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.configuration.TrainerRoadConfiguration
 import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.configuration.TrainerRoadConfigurationRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -21,11 +22,17 @@ import java.time.LocalDateTime
 class TrainerRoadApiClientServiceTest {
     private val trainerRoadApiClient = mock<TrainerRoadApiClient>()
     private val trainerRoadWorkoutCacheService = mock<TrainerRoadWorkoutCacheService>()
+    private val trainerRoadConfigurationRepository = mock<TrainerRoadConfigurationRepository>()
     private val service = TrainerRoadApiClientService(
         trainerRoadApiClient,
-        mock<TrainerRoadConfigurationRepository>(),
+        trainerRoadConfigurationRepository,
         trainerRoadWorkoutCacheService,
     )
+
+    init {
+        whenever(trainerRoadConfigurationRepository.getConfiguration())
+            .thenReturn(TrainerRoadConfiguration(null, false, true))
+    }
 
     @Test
     fun `should request an exclusive end date for a multi-day timeline`() {
@@ -98,6 +105,8 @@ class TrainerRoadApiClientServiceTest {
     @Test
     fun `should associate a uniquely matching completed workout`() {
         val date = LocalDate.of(2026, 9, 1)
+        whenever(trainerRoadConfigurationRepository.getConfiguration())
+            .thenReturn(TrainerRoadConfiguration(null, false, true))
         whenever(trainerRoadApiClient.getTimeline(42, "2026-09-01", "2026-09-02"))
             .thenReturn(
                 TrainerRoadTimelineDTO(
@@ -118,6 +127,30 @@ class TrainerRoadApiClientServiceTest {
         assertEquals(date, result.workouts.single().date)
         assertEquals(1, result.associatedWorkouts)
         verify(trainerRoadApiClient).associateActivity("planned-1", "439841525", false)
+    }
+
+    @Test
+    fun `should not load activities or associate workouts when association is disabled`() {
+        val date = LocalDate.of(2026, 9, 1)
+        whenever(trainerRoadConfigurationRepository.getConfiguration())
+            .thenReturn(TrainerRoadConfiguration(null, false, false))
+        whenever(trainerRoadApiClient.getTimeline(42, "2026-09-01", "2026-09-02"))
+            .thenReturn(
+                TrainerRoadTimelineDTO(
+                    plannedActivities = listOf(plannedActivity("planned-1", date, 7)),
+                    activities = listOf(
+                        TrainerRoadTimelineDTO.ActivityStateDTO(439841525, date.atTime(18, 0)),
+                    ),
+                ),
+            )
+        whenever(trainerRoadWorkoutCacheService.getWorkout("7"))
+            .thenReturn(workout("Cramer"))
+
+        val result = service.getWorkoutsFromCalendarWithAssociationResult(date, date, 42)
+
+        assertEquals(0, result.associatedWorkouts)
+        verify(trainerRoadApiClient, never()).getActivities(any(), any())
+        verify(trainerRoadApiClient, never()).associateActivity(any(), any(), any())
     }
 
     @Test

@@ -63,6 +63,7 @@
 .advanced-title mat-icon,
 .beta-indicator,
 .beta-indicator mat-icon,
+.tooltip-help-icon mat-icon,
 .log-location-title mat-icon {
   width: 20px;
   height: 20px;
@@ -118,6 +119,13 @@
   display: inline-flex;
   align-items: center;
   color: var(--app-text-muted);
+}
+
+.tooltip-help-icon {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  opacity: 0.72;
 }
 
 .weight-sync-hint {

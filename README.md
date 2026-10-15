@@ -48,7 +48,7 @@ TrainingSync is distributed exclusively as a Docker application.
 - Continue processing a batch when an individual workout fails, while reporting the failed items.
 - Preserve relevant workout metadata where supported, including workout structure, duration, load, and external platform identifiers.
 - Reconstruct compact TrainerRoad workout steps from per-second power data when the API omits interval metadata.
-- During a manual or scheduled synchronization with TrainerRoad as the source, automatically associate a completed activity with its planned workout when their dates and workout names match uniquely. This supports activities uploaded from TrainingPeaks Virtual with names such as `TrainingPeaks Virtual - Workout: Cramer`; ambiguous matches are skipped. Association is attempted when the calendar is read, not by an independent background poller.
+- Optionally associate completed TrainerRoad activities with their planned workouts when their dates and workout names match uniquely. This supports activities uploaded from TrainingPeaks Virtual with names such as `TrainingPeaks Virtual - Workout: Cramer`; ambiguous matches are skipped. Association is attempted when the calendar is read, not by an independent background poller.
 
 ### TrainerRoad to TrainingPeaks reconciliation
 
@@ -238,6 +238,8 @@ To obtain it:
 6. Paste it into the TrainingSync Settings page.
 
 The **Remove HTML tags from description** option can be enabled if TrainerRoad descriptions contain unwanted markup.
+
+The **Associate completed workouts with scheduled workouts** option controls whether completed activities are linked to uniquely matching scheduled workouts when the TrainerRoad calendar is read.
 
 See [`docs/tr_guide.png`](docs/tr_guide.png) for a visual guide.
 
