@@ -1,5 +1,6 @@
 package io.github.costaalex.trainingsync.infrastructure.platform.trainerroad
 
+import feign.FeignException
 import io.github.costaalex.trainingsync.domain.activity.Activity
 import io.github.costaalex.trainingsync.domain.workout.Workout
 import io.github.costaalex.trainingsync.domain.workout.WorkoutDetails
@@ -11,6 +12,7 @@ import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.work
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.util.Locale
 
 @Repository
 class TrainerRoadApiClientService(
@@ -43,14 +45,19 @@ class TrainerRoadApiClientService(
     }
 
     fun getWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate, memberId: Long): List<Workout> {
-        return getTimeline(memberId, startDate, endDate)
+        val timeline = getTimeline(memberId, startDate, endDate)
+        val plannedWorkouts = timeline
             .plannedActivities
             .filter { it.date.toLocalDate() in startDate..endDate }
             .mapNotNull { plannedActivity ->
                 plannedActivity.workoutId
                     ?.let { getWorkout(it.toString()) }
                     ?.withDate(plannedActivity.date.toLocalDate())
+                    ?.let { PlannedWorkout(plannedActivity.id, it) }
             }
+
+        associateCompletedActivities(timeline, plannedWorkouts, memberId, startDate, endDate)
+        return plannedWorkouts.map { it.workout }
     }
 
     fun getWorkout(trWorkoutId: String): Workout {
@@ -65,8 +72,19 @@ class TrainerRoadApiClientService(
     }
 
     fun getActivities(memberId: Long, startDate: LocalDate, endDate: LocalDate): List<Activity> {
-        val activityIds = getTimeline(memberId, startDate, endDate)
-            .activities
+        val timeline = getTimeline(memberId, startDate, endDate)
+        val activities = getActivityDetails(timeline, memberId, startDate, endDate)
+        val activityMapper = TrainerRoadActivityMapper()
+        return activities.mapNotNull { mapToActivity(activityMapper, it) }
+    }
+
+    private fun getActivityDetails(
+        timeline: TrainerRoadTimelineDTO,
+        memberId: Long,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): List<TrainerRoadActivityDTO> {
+        val activityIds = timeline.activities
             .filter {
                 val startedDate = it.started?.toLocalDate()
                 startedDate != null && startedDate in startDate..endDate
@@ -77,10 +95,136 @@ class TrainerRoadApiClientService(
             return emptyList()
         }
 
-        val activities = trainerRoadApiClient.getActivities(memberId, activityIds.joinToString(","))
+        return trainerRoadApiClient.getActivities(memberId, activityIds.joinToString(","))
             .filter { it.date.toLocalDate() in startDate..endDate }
-        val activityMapper = TrainerRoadActivityMapper()
-        return activities.mapNotNull { mapToActivity(activityMapper, it) }
+    }
+
+    private fun associateCompletedActivities(
+        timeline: TrainerRoadTimelineDTO,
+        plannedWorkouts: List<PlannedWorkout>,
+        memberId: Long,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ) {
+        if (plannedWorkouts.isEmpty()) {
+            log.debug(
+                "Skipping TrainerRoad activity association because no planned workouts were found in the range",
+            )
+            return
+        }
+
+        val timelineActivityIds = timeline.activities
+            .filter {
+                val startedDate = it.started?.toLocalDate()
+                startedDate != null && startedDate in startDate..endDate
+            }
+            .associateBy { it.id.toString() }
+        if (timelineActivityIds.isEmpty()) {
+            log.debug(
+                "TrainerRoad association scan found no timeline activities in range. plannedWorkouts={}, " +
+                    "timelineActivities={}",
+                plannedWorkouts.size,
+                timeline.activities.size,
+            )
+            return
+        }
+
+        val activities = try {
+            getActivityDetails(timeline, memberId, startDate, endDate)
+        } catch (exception: FeignException) {
+            log.warn(
+                "Unable to check TrainerRoad activities for workout associations (HTTP {})",
+                exception.status(),
+            )
+            return
+        }
+
+        val activityKeys = mutableListOf<AssociationKey>()
+        val plannedByKey = plannedWorkouts
+            .mapNotNull { planned ->
+                val name = normalizeWorkoutName(planned.workout.details.name) ?: return@mapNotNull null
+                AssociationKey(planned.workout.date ?: return@mapNotNull null, name) to planned
+            }
+            .groupBy({ it.first }, { it.second })
+        val activitiesByKey = activities
+            .mapNotNull { activity ->
+                val activityId = sequenceOf(
+                    activity.Id,
+                    activity.activityId?.toString(),
+                    activity.activity?.id,
+                ).filterNotNull()
+                    .firstOrNull { it in timelineActivityIds }
+                    ?: return@mapNotNull null
+                val name = activity.completedRide?.Name ?: activity.name ?: return@mapNotNull null
+                val workoutName = extractWorkoutName(name)?.let(::normalizeWorkoutName) ?: return@mapNotNull null
+                val date = timelineActivityIds[activityId]?.started?.toLocalDate() ?: return@mapNotNull null
+                val key = AssociationKey(date, workoutName)
+                activityKeys += key
+                key to activityId
+            }
+            .groupBy({ it.first }, { it.second })
+
+        var associationCount = 0
+        plannedByKey.forEach { (key, plannedMatches) ->
+            val activityMatches = activitiesByKey[key].orEmpty()
+            if (plannedMatches.size != 1 || activityMatches.size != 1) {
+                if (plannedMatches.isNotEmpty() && activityMatches.isNotEmpty()) {
+                    log.warn(
+                        "Skipping ambiguous TrainerRoad workout association for {} on {} ({} planned, {} activities)",
+                        key.workoutName,
+                        key.date,
+                        plannedMatches.size,
+                        activityMatches.size,
+                    )
+                }
+                return@forEach
+            }
+
+            val planned = plannedMatches.single()
+            val activityId = activityMatches.single()
+            try {
+                trainerRoadApiClient.associateActivity(planned.plannedActivityId, activityId, false)
+                associationCount++
+                log.info(
+                    "Associated TrainerRoad activity {} with planned activity {}",
+                    activityId,
+                    planned.plannedActivityId,
+                )
+            } catch (exception: FeignException) {
+                log.warn(
+                    "Failed to associate TrainerRoad activity {} with planned activity {} (HTTP {})",
+                    activityId,
+                    planned.plannedActivityId,
+                    exception.status(),
+                )
+            }
+        }
+
+        log.debug(
+            "TrainerRoad association scan completed. plannedWorkouts={}, timelineActivities={}, " +
+                "activityDetails={}, namedActivityMatches={}, associations={}",
+            plannedWorkouts.size,
+            timelineActivityIds.size,
+            activities.size,
+            activityKeys.size,
+            associationCount,
+        )
+    }
+
+    private fun extractWorkoutName(activityName: String): String? {
+        val marker = "Workout:"
+        val markerIndex = activityName.indexOf(marker, ignoreCase = true)
+        if (markerIndex < 0) {
+            return null
+        }
+
+        return activityName.substring(markerIndex + marker.length).trim().takeIf { it.isNotEmpty() }
+    }
+
+    private fun normalizeWorkoutName(workoutName: String): String? {
+        return workoutName.trim()
+            .takeIf { it.isNotEmpty() }
+            ?.lowercase(Locale.ROOT)
     }
 
     private fun mapToActivity(activityMapper: TrainerRoadActivityMapper, it: TrainerRoadActivityDTO): Activity? {
@@ -101,4 +245,14 @@ class TrainerRoadApiClientService(
             ?.joinToString { "${it.name}:${it.target.start}-${it.target.end}" }
             ?: "no structure"
     }
+
+    private data class PlannedWorkout(
+        val plannedActivityId: String,
+        val workout: Workout,
+    )
+
+    private data class AssociationKey(
+        val date: LocalDate,
+        val workoutName: String,
+    )
 }

@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Automatically associate uniquely matching completed TrainerRoad activities with their planned workouts when reading the TrainerRoad calendar.
 - Added a "Show more" button to the Sync Center history list, which initially displays the 10 most recent synchronizations.
 - Added skeleton loading placeholders to the TrainerRoad and TrainingPeaks pages while platform connection status is being checked.
 - Added a "Customized" badge to the Intervals.icu "Advanced properties" section on the Settings page when any range percentage differs from its default value.

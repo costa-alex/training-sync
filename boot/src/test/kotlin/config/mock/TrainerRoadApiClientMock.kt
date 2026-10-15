@@ -50,4 +50,8 @@ class TrainerRoadApiClientMock(
     override fun exportFit(activityId: String): Resource {
         TODO("Not yet implemented")
     }
+
+    override fun associateActivity(plannedActivityId: String, activityId: String, background: Boolean) {
+        TODO("Not yet implemented")
+    }
 }
