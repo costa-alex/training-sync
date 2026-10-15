@@ -219,7 +219,8 @@
   background: var(--app-warning-container);
 }
 
-.weight-synced-badge {
+.weight-synced-badge,
+.workouts-associated-badge {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -228,11 +229,20 @@
   border-radius: 12px;
   font-size: 0.78rem;
   font-weight: 600;
-  background: var(--app-info-container);
-  color: var(--app-info);
 }
 
-.weight-synced-badge mat-icon {
+.weight-synced-badge {
+  background: var(--app-success-container);
+  color: var(--app-success);
+}
+
+.workouts-associated-badge {
+  background: var(--app-accent-container);
+  color: var(--app-accent);
+}
+
+.weight-synced-badge mat-icon,
+.workouts-associated-badge mat-icon {
   font-size: 16px;
   height: 16px;
   width: 16px;

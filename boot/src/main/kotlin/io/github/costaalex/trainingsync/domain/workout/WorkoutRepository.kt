@@ -14,6 +14,13 @@ interface WorkoutRepository {
         endDate: LocalDate
     ): List<Workout>
 
+    fun getWorkoutsFromCalendarWithAssociationResult(
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): WorkoutCalendarResult = WorkoutCalendarResult(
+        workouts = getWorkoutsFromCalendar(startDate, endDate)
+    )
+
     fun getWorkoutsFromLibrary(
         libraryContainer: LibraryContainer
     ): List<Workout>

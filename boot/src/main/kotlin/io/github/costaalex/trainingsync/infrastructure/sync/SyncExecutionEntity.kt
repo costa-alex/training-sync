@@ -78,7 +78,10 @@ class SyncExecutionEntity(
     var endDate: LocalDate,
 
     @Column(name = "weight_synced", nullable = false)
-    var weightSynced: Boolean = false
+    var weightSynced: Boolean = false,
+
+    @Column(name = "associated_workouts", nullable = false)
+    var associatedWorkouts: Int = 0
 ) {
     constructor() : this(
         triggerType = SyncExecutionTrigger.MANUAL,

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-associated-workouts-column
+      author: tp2intervals
+      changes:
+        - addColumn:
+            tableName: sync_executions
+            columns:
+              - column:
+                  name: associated_workouts
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false

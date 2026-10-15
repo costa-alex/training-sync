@@ -112,10 +112,11 @@ class TrainerRoadApiClientServiceTest {
         whenever(trainerRoadApiClient.getActivities(42, "439841525"))
             .thenReturn(listOf(activity("439841525", "TrainingPeaks Virtual - Workout: Cramer", date)))
 
-        val workouts = service.getWorkoutsFromCalendar(date, date, 42)
+        val result = service.getWorkoutsFromCalendarWithAssociationResult(date, date, 42)
 
-        assertEquals("Cramer", workouts.single().details.name)
-        assertEquals(date, workouts.single().date)
+        assertEquals("Cramer", result.workouts.single().details.name)
+        assertEquals(date, result.workouts.single().date)
+        assertEquals(1, result.associatedWorkouts)
         verify(trainerRoadApiClient).associateActivity("planned-1", "439841525", false)
     }
 

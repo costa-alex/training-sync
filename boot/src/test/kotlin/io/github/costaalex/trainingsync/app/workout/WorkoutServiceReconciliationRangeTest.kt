@@ -6,6 +6,7 @@ import io.github.costaalex.trainingsync.domain.Platform
 import io.github.costaalex.trainingsync.domain.TrainingType
 import io.github.costaalex.trainingsync.domain.librarycontainer.LibraryContainer
 import io.github.costaalex.trainingsync.domain.workout.Workout
+import io.github.costaalex.trainingsync.domain.workout.WorkoutCalendarResult
 import io.github.costaalex.trainingsync.domain.workout.WorkoutDetails
 import io.github.costaalex.trainingsync.domain.workout.WorkoutRepository
 import io.github.costaalex.trainingsync.domain.workout.structure.SingleStep
@@ -126,7 +127,8 @@ class WorkoutServiceReconciliationRangeTest {
                         externalData = ExternalData(null, null, "tr-new-2")
                     )
                 )
-            )
+            ),
+            associatedWorkoutsByDate = mapOf(firstDate to 1, secondDate to 2),
         )
 
         val targetRepository = FakeWorkoutRepository(
@@ -173,6 +175,7 @@ class WorkoutServiceReconciliationRangeTest {
 
         assertThat(response.copied).isEqualTo(2)
         assertThat(response.removed).isEqualTo(2)
+        assertThat(response.associatedWorkouts).isEqualTo(3)
         assertThat(response.startDate).isEqualTo(firstDate)
         assertThat(response.endDate).isEqualTo(secondDate)
         assertThat(
@@ -234,7 +237,8 @@ class WorkoutServiceReconciliationRangeTest {
 
     private class FakeWorkoutRepository(
         private val platform: Platform,
-        private val workoutsByDate: Map<LocalDate, List<Workout>>
+        private val workoutsByDate: Map<LocalDate, List<Workout>>,
+        private val associatedWorkoutsByDate: Map<LocalDate, Int> = emptyMap(),
     ) : WorkoutRepository {
         val requestedPeriods = mutableListOf<Pair<LocalDate, LocalDate>>()
         val savedWorkouts = mutableListOf<Workout>()
@@ -249,6 +253,17 @@ class WorkoutServiceReconciliationRangeTest {
         ): List<Workout> {
             requestedPeriods += startDate to endDate
             return workoutsByDate[startDate].orEmpty()
+        }
+
+        override fun getWorkoutsFromCalendarWithAssociationResult(
+            startDate: LocalDate,
+            endDate: LocalDate,
+        ): WorkoutCalendarResult {
+            val workouts = getWorkoutsFromCalendar(startDate, endDate)
+            return WorkoutCalendarResult(
+                workouts = workouts,
+                associatedWorkouts = associatedWorkoutsByDate[startDate] ?: 0,
+            )
         }
 
         override fun saveWorkoutsToCalendar(workouts: List<Workout>) {

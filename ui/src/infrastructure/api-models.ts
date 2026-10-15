@@ -38,6 +38,7 @@ export interface CopyWorkoutsResponse {
   removed: number;
   failedToRemove: number;
   failedRemovals: WorkoutSyncFailure[];
+  associatedWorkouts: number;
 }
 
 export interface CopyPlanResponse {

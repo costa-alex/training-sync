@@ -55,6 +55,7 @@ class SyncExecutionService(
             execution.failed = response.failed
             execution.failedToRemove =
                 response.failedToRemove
+            execution.associatedWorkouts = response.associatedWorkouts
 
             execution.errorMessage = (
                 response.failedWorkouts.map { failure ->

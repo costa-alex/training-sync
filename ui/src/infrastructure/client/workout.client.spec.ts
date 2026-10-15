@@ -26,6 +26,7 @@ describe('WorkoutClient', () => {
     removed: 0,
     failedToRemove: 0,
     failedRemovals: [],
+    associatedWorkouts: 0,
   };
 
   beforeEach(() => {

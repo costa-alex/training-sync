@@ -278,6 +278,17 @@
                   </span>
                 }
 
+                @if (execution.associatedWorkouts > 0) {
+                  <span class="workouts-associated-badge">
+                    <mat-icon inline="true">link</mat-icon>
+                    <span>
+                      {{ execution.associatedWorkouts }}
+                      workout{{ execution.associatedWorkouts === 1 ? '' : 's' }}
+                      associated on TrainerRoad
+                    </span>
+                  </span>
+                }
+
                 <span
                   class="execution-status"
                   [class.status-success]="execution.status === 'SUCCESS'"

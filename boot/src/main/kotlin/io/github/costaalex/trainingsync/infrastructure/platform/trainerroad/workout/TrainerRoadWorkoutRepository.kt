@@ -4,6 +4,7 @@ import io.github.costaalex.trainingsync.domain.ExternalData
 import io.github.costaalex.trainingsync.domain.Platform
 import io.github.costaalex.trainingsync.domain.librarycontainer.LibraryContainer
 import io.github.costaalex.trainingsync.domain.workout.Workout
+import io.github.costaalex.trainingsync.domain.workout.WorkoutCalendarResult
 import io.github.costaalex.trainingsync.domain.workout.WorkoutDetails
 import io.github.costaalex.trainingsync.domain.workout.WorkoutRepository
 import io.github.costaalex.trainingsync.infrastructure.PlatformException
@@ -31,8 +32,19 @@ class TrainerRoadWorkoutRepository(
     }
 
     override fun getWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate): List<Workout> {
+        return getWorkoutsFromCalendarWithAssociationResult(startDate, endDate).workouts
+    }
+
+    override fun getWorkoutsFromCalendarWithAssociationResult(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): WorkoutCalendarResult {
         val memberId = trUsernameRepository.getMemberId()
-        return trainerRoadApiClientService.getWorkoutsFromCalendar(startDate, endDate, memberId)
+        return trainerRoadApiClientService.getWorkoutsFromCalendarWithAssociationResult(
+            startDate,
+            endDate,
+            memberId,
+        )
     }
 
     override fun saveWorkoutsToCalendar(workouts: List<Workout>) {

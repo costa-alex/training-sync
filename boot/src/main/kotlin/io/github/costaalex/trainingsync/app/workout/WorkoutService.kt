@@ -164,7 +164,8 @@ class WorkoutService(
             failedWorkouts = responses.flatMap { it.failedWorkouts },
             removed = responses.sumOf { it.removed },
             failedToRemove = responses.sumOf { it.failedToRemove },
-            failedRemovals = responses.flatMap { it.failedRemovals }
+            failedRemovals = responses.flatMap { it.failedRemovals },
+            associatedWorkouts = responses.sumOf { it.associatedWorkouts },
         )
     }
     
@@ -183,10 +184,11 @@ class WorkoutService(
 
         val sourceRepository = getWorkoutRepository(request.sourcePlatform)
         val targetRepository = getWorkoutRepository(request.targetPlatform)
-        val allSourceWorkouts = sourceRepository.getWorkoutsFromCalendar(
+        val sourceCalendarResult = sourceRepository.getWorkoutsFromCalendarWithAssociationResult(
                 request.startDate,
                 request.endDate
             )
+        val allSourceWorkouts = sourceCalendarResult.workouts
 
         val sourceWorkouts = allSourceWorkouts.filter {
             request.types.contains(it.details.type)
@@ -212,7 +214,8 @@ class WorkoutService(
                 skippedAlreadySynced = 0,
                 startDate = request.startDate,
                 endDate = request.endDate,
-                externalData = ExternalData.empty()
+                externalData = ExternalData.empty(),
+                associatedWorkouts = sourceCalendarResult.associatedWorkouts,
             )
         }
 
@@ -348,7 +351,8 @@ class WorkoutService(
             failedWorkouts = copyFailures,
             removed = deleteResult.removed,
             failedToRemove = deleteResult.failures.size,
-            failedRemovals = deleteResult.failures
+            failedRemovals = deleteResult.failures,
+            associatedWorkouts = sourceCalendarResult.associatedWorkouts,
         )
 
         log.info(
@@ -373,10 +377,11 @@ class WorkoutService(
         val sourceWorkoutRepository = getWorkoutRepository(request.sourcePlatform)
         val targetWorkoutRepository = getWorkoutRepository(request.targetPlatform)
 
-        val allWorkouts = sourceWorkoutRepository.getWorkoutsFromCalendar(
+        val sourceCalendarResult = sourceWorkoutRepository.getWorkoutsFromCalendarWithAssociationResult(
             request.startDate,
             request.endDate
         )
+        val allWorkouts = sourceCalendarResult.workouts
 
         val workoutsAfterTypeFilter = allWorkouts.filter {
             request.types.contains(it.details.type)
@@ -421,7 +426,8 @@ class WorkoutService(
             endDate = request.endDate,
             externalData = ExternalData.empty(),
             failed = saveResult.failures.size,
-            failedWorkouts = saveResult.failures
+            failedWorkouts = saveResult.failures,
+            associatedWorkouts = sourceCalendarResult.associatedWorkouts,
         )
 
         log.info(

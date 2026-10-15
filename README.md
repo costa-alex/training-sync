@@ -161,6 +161,7 @@ Calendar-to-calendar executions are stored and displayed on the Sync Center page
 - execution status;
 - available error details;
 - whether the TrainerRoad weight was updated during that run (see [Weight synchronization](#weight-synchronization)).
+- how many completed workouts were associated with planned TrainerRoad workouts during that run.
 
 Possible statuses are:
 

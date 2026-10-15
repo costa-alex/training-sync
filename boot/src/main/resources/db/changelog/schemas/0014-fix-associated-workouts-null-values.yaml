@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: fix-associated-workouts-null-values
+      author: tp2intervals
+      changes:
+        - update:
+            tableName: sync_executions
+            columns:
+              - column:
+                  name: associated_workouts
+                  valueNumeric: 0
+            where: associated_workouts IS NULL

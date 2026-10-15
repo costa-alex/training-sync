@@ -23,7 +23,8 @@ data class SyncExecutionResponse(
     val failed: Int,
     val failedToRemove: Int,
     val errorMessage: String?,
-    val weightSynced: Boolean
+    val weightSynced: Boolean,
+    val associatedWorkouts: Int,
 ) {
     companion object {
         fun fromEntity(
@@ -47,7 +48,8 @@ data class SyncExecutionResponse(
             failed = entity.failed,
             failedToRemove = entity.failedToRemove,
             errorMessage = entity.errorMessage,
-            weightSynced = entity.weightSynced
+            weightSynced = entity.weightSynced,
+            associatedWorkouts = entity.associatedWorkouts,
         )
     }
 }

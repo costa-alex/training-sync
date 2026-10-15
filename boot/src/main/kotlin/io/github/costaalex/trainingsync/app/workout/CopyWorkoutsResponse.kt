@@ -15,5 +15,6 @@ data class CopyWorkoutsResponse(
     val failedWorkouts: List<WorkoutSyncFailure> = emptyList(),
     val removed: Int = 0,
     val failedToRemove: Int = 0,
-    val failedRemovals: List<WorkoutSyncFailure> = emptyList()
+    val failedRemovals: List<WorkoutSyncFailure> = emptyList(),
+    val associatedWorkouts: Int = 0,
 )

@@ -2,6 +2,7 @@ package io.github.costaalex.trainingsync.infrastructure.platform.trainerroad
 
 import feign.FeignException
 import io.github.costaalex.trainingsync.domain.activity.Activity
+import io.github.costaalex.trainingsync.domain.workout.WorkoutCalendarResult
 import io.github.costaalex.trainingsync.domain.workout.Workout
 import io.github.costaalex.trainingsync.domain.workout.WorkoutDetails
 import io.github.costaalex.trainingsync.domain.workout.structure.SingleStep
@@ -45,6 +46,14 @@ class TrainerRoadApiClientService(
     }
 
     fun getWorkoutsFromCalendar(startDate: LocalDate, endDate: LocalDate, memberId: Long): List<Workout> {
+        return getWorkoutsFromCalendarWithAssociationResult(startDate, endDate, memberId).workouts
+    }
+
+    fun getWorkoutsFromCalendarWithAssociationResult(
+        startDate: LocalDate,
+        endDate: LocalDate,
+        memberId: Long,
+    ): WorkoutCalendarResult {
         val timeline = getTimeline(memberId, startDate, endDate)
         val plannedWorkouts = timeline
             .plannedActivities
@@ -56,8 +65,17 @@ class TrainerRoadApiClientService(
                     ?.let { PlannedWorkout(plannedActivity.id, it) }
             }
 
-        associateCompletedActivities(timeline, plannedWorkouts, memberId, startDate, endDate)
-        return plannedWorkouts.map { it.workout }
+        val associatedWorkouts = associateCompletedActivities(
+            timeline,
+            plannedWorkouts,
+            memberId,
+            startDate,
+            endDate,
+        )
+        return WorkoutCalendarResult(
+            workouts = plannedWorkouts.map { it.workout },
+            associatedWorkouts = associatedWorkouts,
+        )
     }
 
     fun getWorkout(trWorkoutId: String): Workout {
@@ -105,12 +123,12 @@ class TrainerRoadApiClientService(
         memberId: Long,
         startDate: LocalDate,
         endDate: LocalDate,
-    ) {
+    ): Int {
         if (plannedWorkouts.isEmpty()) {
             log.debug(
                 "Skipping TrainerRoad activity association because no planned workouts were found in the range",
             )
-            return
+            return 0
         }
 
         val timelineActivityIds = timeline.activities
@@ -126,7 +144,7 @@ class TrainerRoadApiClientService(
                 plannedWorkouts.size,
                 timeline.activities.size,
             )
-            return
+            return 0
         }
 
         val activities = try {
@@ -136,7 +154,7 @@ class TrainerRoadApiClientService(
                 "Unable to check TrainerRoad activities for workout associations (HTTP {})",
                 exception.status(),
             )
-            return
+            return 0
         }
 
         val activityKeys = mutableListOf<AssociationKey>()
@@ -209,6 +227,7 @@ class TrainerRoadApiClientService(
             activityKeys.size,
             associationCount,
         )
+        return associationCount
     }
 
     private fun extractWorkoutName(activityName: String): String? {
