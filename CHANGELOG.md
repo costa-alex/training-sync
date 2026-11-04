@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Added a self-contained Windows x64 ZIP release with a bundled Java runtime, localhost-only launcher, and persistent data under `%LOCALAPPDATA%\TrainingSync`.
 - Added a TrainerRoad Settings checkbox to enable or disable association of uniquely matching completed activities with scheduled workouts.
 - Automatically associate uniquely matching completed TrainerRoad activities with their planned workouts when reading the TrainerRoad calendar.
 - Show a Sync history badge when completed workouts are associated with planned TrainerRoad workouts.

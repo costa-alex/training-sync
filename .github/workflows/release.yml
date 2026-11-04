@@ -17,9 +17,144 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  windows-package:
+    name: Build Windows ZIP
+    runs-on: windows-latest
+    outputs:
+      source-sha: ${{ steps.source.outputs.sha }}
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: Record source commit
+        id: source
+        shell: pwsh
+        run: |
+          $sha = git rev-parse HEAD
+          "sha=$sha" >> $env:GITHUB_OUTPUT
+
+      - name: Validate release version
+        id: version
+        shell: pwsh
+        env:
+          VERSION_INPUT: ${{ inputs.version }}
+        run: |
+          $version = $env:VERSION_INPUT -replace '^v', ''
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Invalid version: $version"
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+          Set-Content -Path boot/version -Value $version -NoNewline
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: "21"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22.23.1"
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Build frontend
+        working-directory: ui
+        run: |
+          npm ci
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Package application and verify Windows runtime
+        shell: pwsh
+        run: |
+          $staticPath = Join-Path $PWD 'boot/src/main/resources/static'
+          Remove-Item $staticPath -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $staticPath -Force | Out-Null
+          Copy-Item -Path 'ui/dist/ui/browser/*' -Destination $staticPath -Recurse -Force
+
+          Push-Location boot
+          try {
+            .\gradlew.bat --no-daemon bootJar -x test
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Gradle failed to build the Spring Boot application.'
+            }
+          }
+          finally {
+            Pop-Location
+          }
+
+          $packageRoot = Join-Path $PWD 'dist/TrainingSync'
+          New-Item -ItemType Directory -Path $packageRoot -Force | Out-Null
+          Copy-Item 'boot/build/libs/training-sync.jar' (Join-Path $packageRoot 'training-sync.jar')
+          Copy-Item 'packaging/windows/start-training-sync.bat' $packageRoot
+
+          & "$env:JAVA_HOME\bin\jlink.exe" `
+            --add-modules ALL-MODULE-PATH `
+            --strip-debug `
+            --no-header-files `
+            --no-man-pages `
+            --compress=2 `
+            --output (Join-Path $packageRoot 'runtime')
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not build the bundled Java runtime.'
+          }
+
+          $smokeData = Join-Path $env:RUNNER_TEMP 'training-sync-smoke'
+          New-Item -ItemType Directory -Path $smokeData -Force | Out-Null
+          $env:LOCALAPPDATA = $smokeData
+          Remove-Item Env:SPRING_DATASOURCE_URL -ErrorAction SilentlyContinue
+          Remove-Item Env:LOGGING_FILE_NAME -ErrorAction SilentlyContinue
+          Remove-Item Env:SERVER_ADDRESS -ErrorAction SilentlyContinue
+          Remove-Item Env:SERVER_PORT -ErrorAction SilentlyContinue
+
+          $stdoutPath = Join-Path $env:RUNNER_TEMP 'training-sync-stdout.log'
+          $stderrPath = Join-Path $env:RUNNER_TEMP 'training-sync-stderr.log'
+          $launcherPath = Join-Path $packageRoot 'start-training-sync.bat'
+          $process = Start-Process -FilePath $env:ComSpec `
+            -ArgumentList @('/c', $launcherPath) `
+            -WorkingDirectory $packageRoot `
+            -RedirectStandardOutput $stdoutPath `
+            -RedirectStandardError $stderrPath `
+            -PassThru
+
+          try {
+            & curl.exe --fail --silent --show-error --retry 30 --retry-connrefused --retry-delay 2 'http://127.0.0.1:8080/actuator/health'
+            if ($LASTEXITCODE -ne 0) {
+              Get-Content $stdoutPath, $stderrPath -ErrorAction SilentlyContinue
+              throw 'The packaged Windows application failed its health check.'
+            }
+            if (-not (Test-Path (Join-Path $smokeData 'TrainingSync/training-sync.sqlite'))) {
+              throw 'The Windows launcher did not create its persistent SQLite database.'
+            }
+          }
+          finally {
+            if (-not $process.HasExited) {
+              & taskkill.exe /PID $process.Id /T /F | Out-Null
+            }
+          }
+
+          $version = '${{ steps.version.outputs.version }}'
+          $zipPath = Join-Path $PWD "dist/TrainingSync-windows-x64-$version.zip"
+          Compress-Archive -Path (Join-Path $packageRoot '*') -DestinationPath $zipPath -CompressionLevel Optimal
+
+      - name: Upload Windows ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-sync-windows-x64
+          path: dist/TrainingSync-windows-x64-${{ steps.version.outputs.version }}.zip
+          if-no-files-found: error
+
   release:
     name: Validate and publish release
     runs-on: ubuntu-latest
+    needs: windows-package
 
     steps:
       - name: Checkout main
@@ -27,6 +162,23 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+
+      - name: Verify Windows package source
+        shell: bash
+        run: |
+          CHECKED_OUT_SHA="$(git rev-parse HEAD)"
+          if [ "$CHECKED_OUT_SHA" != "${{ needs.windows-package.outputs.source-sha }}" ]; then
+            echo "main changed while the Windows package was being built"
+            echo "Windows package source: ${{ needs.windows-package.outputs.source-sha }}"
+            echo "Current main:           $CHECKED_OUT_SHA"
+            exit 1
+          fi
+
+      - name: Download Windows ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: training-sync-windows-x64
+          path: release-assets
 
       - name: Normalize and validate version
         id: version
@@ -188,6 +340,7 @@ jobs:
         run: |
           gh release create \
             "${{ steps.version.outputs.tag }}" \
+            "release-assets/TrainingSync-windows-x64-${{ steps.version.outputs.version }}.zip" \
             --verify-tag \
             --title "${{ steps.version.outputs.tag }}" \
             --generate-notes

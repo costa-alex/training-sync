@@ -8,7 +8,7 @@ TrainingSync is a self-hosted web application for copying and synchronizing plan
 
 It provides a responsive, mobile-friendly interface for manual synchronization, workout-library operations, recurring schedules, and synchronization history.
 
-TrainingSync is distributed exclusively as a Docker application.
+TrainingSync is distributed as a Docker image and as a self-contained ZIP for Windows x64.
 
 > This project is independent and is not affiliated with, endorsed by, or sponsored by TrainerRoad, TrainingPeaks, or Intervals.icu. All trademarks belong to their respective owners.
 
@@ -26,6 +26,7 @@ TrainingSync is distributed exclusively as a Docker application.
 - [Scheduler and history](#scheduler-and-history)
 - [Settings](#settings)
 - [Running with Docker Compose](#running-with-docker-compose)
+- [Running on Windows](#running-on-windows)
 - [Updating](#updating)
 - [Building from source](#building-from-source)
 - [Continuous integration and releases](#continuous-integration-and-releases)
@@ -180,7 +181,7 @@ Open **Settings** after starting the application. Intervals.icu credentials are 
 
 The **General** section offers System, Light, and Dark appearance modes. System follows the operating-system preference, while an explicit choice is stored in the current browser.
 
-Platform settings, schedules, and execution history are stored in the SQLite database under `/data`.
+Platform settings, schedules, and execution history are stored in the SQLite database under `/data` for Docker deployments or `%LOCALAPPDATA%\TrainingSync` for the Windows ZIP.
 
 ### Intervals.icu
 
@@ -327,6 +328,20 @@ Spring Boot Actuator exposes a health endpoint at:
 http://<server-address>:8098/actuator/health
 ```
 
+## Running on Windows
+
+Download `TrainingSync-windows-x64-<version>.zip` from the GitHub Release assets and extract it to a folder. The ZIP includes the application and its Java runtime; no Docker or Java installation is required.
+
+Run `start-training-sync.bat` and open:
+
+```text
+http://localhost:8080
+```
+
+The launcher binds the server to this computer only. Keep the console window open while using TrainingSync and press Ctrl+C in it to stop the server. Application data and logs are stored in `%LOCALAPPDATA%\TrainingSync`, independently from the Docker data directory.
+
+To update, stop the application, back up `%LOCALAPPDATA%\TrainingSync`, extract the new release into a new or replacement application folder, and start it again. Do not run the Windows and Docker installations against the same SQLite database at the same time.
+
 ## Updating
 
 Pull the newest image and recreate the container:
@@ -367,12 +382,14 @@ docker run --rm \
   training-sync:local
 ```
 
-The application has no separate desktop distribution. The multi-stage Docker build:
+The application is a web server, not a desktop client. The multi-stage Docker build:
 
 1. builds the Angular UI with Node.js 22.23.1;
 2. copies the UI into the Spring Boot resources;
 3. builds the Kotlin application with Java 21;
 4. produces a single runtime container exposing port `8080`.
+
+Windows ZIP releases are built separately on a Windows runner. They bundle the same Angular UI and Spring Boot application with a Java runtime and a launcher.
 
 ### Local development
 
@@ -461,9 +478,9 @@ The release workflow:
 1. validates the requested version;
 2. prepares the `boot/version` change and Git tag locally;
 3. runs backend and frontend validation;
-4. builds and publishes the Docker image;
-5. atomically pushes the release commit and tag;
-6. creates the GitHub Release.
+4. builds and smoke-tests the self-contained Windows x64 ZIP;
+5. prepares the Docker image and atomically pushes the release commit and tag;
+6. publishes the Docker image and creates the GitHub Release with the Windows ZIP attached.
 
 Published images use the following tags:
 
@@ -485,6 +502,8 @@ The `/data` directory contains the persistent application state:
 ```
 
 The SQLite database contains platform configuration, schedules, and synchronization history. Protect it because it may contain authentication cookies.
+
+For the Windows ZIP, the corresponding database and log are stored at `%LOCALAPPDATA%\TrainingSync\training-sync.sqlite` and `%LOCALAPPDATA%\TrainingSync\training-sync.log`.
 
 ### Backup
 
