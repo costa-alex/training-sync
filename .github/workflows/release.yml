@@ -145,7 +145,7 @@ jobs:
           Compress-Archive -Path (Join-Path $packageRoot '*') -DestinationPath $zipPath -CompressionLevel Optimal
 
       - name: Upload Windows ZIP
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: training-sync-windows-x64
           path: dist/TrainingSync-windows-x64-${{ steps.version.outputs.version }}.zip
@@ -175,7 +175,7 @@ jobs:
           fi
 
       - name: Download Windows ZIP
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: training-sync-windows-x64
           path: release-assets
