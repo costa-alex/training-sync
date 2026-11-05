@@ -50,24 +50,37 @@ class TrainerRoadFtpSyncService(
                 (setting["indoor_ftp"] as? Number)?.toInt() != ftp
         }
 
+        var updated = false
         updatedSettings.forEach { setting ->
-            val id = checkNotNull(setting["id"]) {
-                "Intervals.icu sport settings are missing an ID"
-            }.toString()
-            intervalsApiClient.updateSportSettings(
-                athleteId = athleteId,
-                id = id,
-                recalcHrZones = false,
-                settings = setting + mapOf(
-                    "ftp" to ftp,
-                    "indoor_ftp" to ftp,
-                ),
-            )
+            val id = setting["id"]?.toString()
+            if (id == null) {
+                log.warn("Intervals.icu sport settings are missing an ID; skipping FTP update")
+                return@forEach
+            }
+
+            try {
+                intervalsApiClient.updateSportSettings(
+                    athleteId = athleteId,
+                    id = id,
+                    recalcHrZones = false,
+                    settings = setting + mapOf(
+                        "ftp" to ftp,
+                        "indoor_ftp" to ftp,
+                    ),
+                )
+                updated = true
+            } catch (exception: Exception) {
+                log.warn(
+                    "Unable to update FTP for Intervals.icu sport setting {}",
+                    id,
+                    exception,
+                )
+            }
         }
 
-        if (updatedSettings.isNotEmpty()) {
-            log.info("Updated FTP for {} Intervals.icu sport setting(s)", updatedSettings.size)
+        if (updated) {
+            log.info("Updated FTP for Intervals.icu sport settings")
         }
-        return updatedSettings.isNotEmpty()
+        return updated
     }
 }

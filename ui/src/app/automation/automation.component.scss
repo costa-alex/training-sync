@@ -220,6 +220,7 @@
 }
 
 .weight-synced-badge,
+.ftp-synced-badge,
 .workouts-associated-badge {
   flex: 0 0 auto;
   display: inline-flex;
@@ -231,7 +232,8 @@
   font-weight: 600;
 }
 
-.weight-synced-badge {
+.weight-synced-badge,
+.ftp-synced-badge {
   background: var(--app-success-container);
   color: var(--app-success);
 }
@@ -242,6 +244,7 @@
 }
 
 .weight-synced-badge mat-icon,
+.ftp-synced-badge mat-icon,
 .workouts-associated-badge mat-icon {
   font-size: 16px;
   height: 16px;

@@ -52,7 +52,7 @@ class SyncExecutionService(
                 request.sourcePlatform == Platform.TRAINER_ROAD &&
                 request.targetPlatform == Platform.INTERVALS
             ) {
-                trainerRoadFtpSyncService.syncFtpIfEnabled()
+                execution.ftpSynced = trainerRoadFtpSyncService.syncFtpIfEnabled()
             }
 
             execution.finishedAt = LocalDateTime.now()

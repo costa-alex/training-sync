@@ -24,6 +24,7 @@ data class SyncExecutionResponse(
     val failedToRemove: Int,
     val errorMessage: String?,
     val weightSynced: Boolean,
+    val ftpSynced: Boolean,
     val associatedWorkouts: Int,
 ) {
     companion object {
@@ -49,6 +50,7 @@ data class SyncExecutionResponse(
             failedToRemove = entity.failedToRemove,
             errorMessage = entity.errorMessage,
             weightSynced = entity.weightSynced,
+            ftpSynced = entity.ftpSynced,
             associatedWorkouts = entity.associatedWorkouts,
         )
     }

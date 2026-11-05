@@ -39,6 +39,7 @@ export interface SyncExecution {
   failedToRemove: number;
   errorMessage?: string;
   weightSynced: boolean;
+  ftpSynced: boolean;
   associatedWorkouts: number;
 }
 

@@ -278,6 +278,13 @@
                   </span>
                 }
 
+                @if (execution.ftpSynced) {
+                  <span class="ftp-synced-badge">
+                    <mat-icon inline="true">speed</mat-icon>
+                    <span>FTP updated on Intervals.icu</span>
+                  </span>
+                }
+
                 @if (execution.associatedWorkouts > 0) {
                   <span class="workouts-associated-badge">
                     <mat-icon inline="true">link</mat-icon>

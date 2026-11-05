@@ -80,6 +80,9 @@ class SyncExecutionEntity(
     @Column(name = "weight_synced", nullable = false)
     var weightSynced: Boolean = false,
 
+    @Column(name = "ftp_synced", nullable = false)
+    var ftpSynced: Boolean = false,
+
     @Column(name = "associated_workouts", nullable = false)
     var associatedWorkouts: Int = 0
 ) {
