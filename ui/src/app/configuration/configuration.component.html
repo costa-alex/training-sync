@@ -87,6 +87,17 @@
               <mat-icon>auto_awesome</mat-icon>
             </span>
           </div>
+
+          <div class="checkbox-line">
+            <mat-checkbox formControlName="trainer-road.sync-ftp-to-intervals">
+              Sync FTP to Intervals.icu
+            </mat-checkbox>
+          </div>
+          @if (!canSyncFtpToIntervals) {
+            <p class="sync-setting-hint">
+              Requires both TrainerRoad and Intervals.icu to be connected.
+            </p>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -209,7 +220,7 @@
             </mat-checkbox>
           </div>
           @if (!canSyncWeightToTrainerRoad) {
-            <p class="weight-sync-hint">
+            <p class="sync-setting-hint">
               Requires both Intervals.icu and TrainerRoad to be connected.
             </p>
           }

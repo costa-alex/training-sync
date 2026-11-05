@@ -7,4 +7,6 @@ class TrainerRoadMemberDTO(
     val MemberId: Long,
     @JsonAlias("username")
     val Username: String?,
+    @JsonAlias("FTP")
+    val ftp: Int? = null,
 )

@@ -122,6 +122,10 @@ export class ConfigurationComponent implements OnInit {
       null,
       Validators.required
     ],
+    'trainer-road.sync-ftp-to-intervals': [
+      null,
+      Validators.required
+    ],
     'intervals.sync-weight-to-trainer-road': [
       null,
       Validators.required
@@ -175,8 +179,11 @@ export class ConfigurationComponent implements OnInit {
   }
 
   get canSyncWeightToTrainerRoad(): boolean {
-    return this.platformInfo[Platform.INTERVALS.key]?.isValid === true &&
-      this.platformInfo[Platform.TRAINER_ROAD.key]?.isValid === true;
+    return this.areIntervalsAndTrainerRoadConnected;
+  }
+
+  get canSyncFtpToIntervals(): boolean {
+    return this.areIntervalsAndTrainerRoadConnected;
   }
 
   onSubmit(): void {
@@ -242,24 +249,33 @@ export class ConfigurationComponent implements OnInit {
       .subscribe({
         next: platformInfo => {
           this.platformInfo = platformInfo;
-          this.updateSyncWeightControlState();
+          this.updateSyncControlStates();
         },
         error: () => {
           this.platformInfo = {};
-          this.updateSyncWeightControlState();
+          this.updateSyncControlStates();
         }
       });
   }
 
-  private updateSyncWeightControlState(): void {
-    const control =
+  private updateSyncControlStates(): void {
+    const syncWeightControl =
       this.formGroup.controls['intervals.sync-weight-to-trainer-road'];
+    const syncFtpControl =
+      this.formGroup.controls['trainer-road.sync-ftp-to-intervals'];
 
     if (this.canSyncWeightToTrainerRoad) {
-      control.enable({ emitEvent: false });
+      syncWeightControl.enable({ emitEvent: false });
+      syncFtpControl.enable({ emitEvent: false });
     } else {
-      control.disable({ emitEvent: false });
+      syncWeightControl.disable({ emitEvent: false });
+      syncFtpControl.disable({ emitEvent: false });
     }
+  }
+
+  private get areIntervalsAndTrainerRoadConnected(): boolean {
+    return this.platformInfo[Platform.INTERVALS.key]?.isValid === true &&
+      this.platformInfo[Platform.TRAINER_ROAD.key]?.isValid === true;
   }
 
   private listenCookie(

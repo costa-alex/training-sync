@@ -1,9 +1,11 @@
 package io.github.costaalex.trainingsync.app.workout.execution
 
-import io.github.costaalex.trainingsync.app.weight.WeightSyncService
+import io.github.costaalex.trainingsync.app.ftp.TrainerRoadFtpSyncService
 import io.github.costaalex.trainingsync.app.workout.CopyFromCalendarToCalendarRequest
 import io.github.costaalex.trainingsync.app.workout.CopyWorkoutsResponse
 import io.github.costaalex.trainingsync.app.workout.WorkoutService
+import io.github.costaalex.trainingsync.app.weight.WeightSyncService
+import io.github.costaalex.trainingsync.domain.Platform
 import io.github.costaalex.trainingsync.infrastructure.sync.SyncExecutionEntity
 import io.github.costaalex.trainingsync.infrastructure.sync.SyncExecutionRepository
 import org.springframework.stereotype.Service
@@ -18,7 +20,8 @@ class SyncExecutionService(
     private val syncExecutionRepository: SyncExecutionRepository,
     private val maintenanceService: SyncExecutionMaintenanceService,
     private val syncHistoryProperties: SyncHistoryProperties,
-    private val weightSyncService: WeightSyncService
+    private val weightSyncService: WeightSyncService,
+    private val trainerRoadFtpSyncService: TrainerRoadFtpSyncService,
 ) {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
@@ -44,6 +47,13 @@ class SyncExecutionService(
         try {
             val response =
                 workoutService.copyWorkoutsC2C(request)
+
+            if (
+                request.sourcePlatform == Platform.TRAINER_ROAD &&
+                request.targetPlatform == Platform.INTERVALS
+            ) {
+                trainerRoadFtpSyncService.syncFtpIfEnabled()
+            }
 
             execution.finishedAt = LocalDateTime.now()
             execution.copied = response.copied

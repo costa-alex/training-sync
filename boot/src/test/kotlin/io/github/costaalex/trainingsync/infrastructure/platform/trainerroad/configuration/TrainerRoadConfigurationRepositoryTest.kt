@@ -3,6 +3,8 @@ package io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.con
 import io.github.costaalex.trainingsync.domain.config.AppConfiguration
 import io.github.costaalex.trainingsync.domain.config.AppConfigurationRepository
 import io.github.costaalex.trainingsync.domain.config.UpdateConfigurationRequest
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -11,6 +13,20 @@ import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 
 class TrainerRoadConfigurationRepositoryTest {
+    @Test
+    fun `FTP sync defaults to disabled and reads its saved setting`() {
+        val legacyConfig = TrainerRoadConfiguration(mapOf("trainer-road.auth-cookie" to "cookie"))
+        val enabledConfig = TrainerRoadConfiguration(
+            mapOf(
+                "trainer-road.auth-cookie" to "cookie",
+                "trainer-road.sync-ftp-to-intervals" to "true",
+            )
+        )
+
+        assertFalse(legacyConfig.syncFtpToIntervals)
+        assertTrue(enabledConfig.syncFtpToIntervals)
+    }
+
     @Test
     fun `should clear account caches after updating configuration`() {
         val appConfigurationRepository = mock<AppConfigurationRepository>()

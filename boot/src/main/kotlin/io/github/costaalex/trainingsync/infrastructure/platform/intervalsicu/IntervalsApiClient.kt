@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
 
@@ -72,4 +74,17 @@ interface IntervalsApiClient {
         @PathVariable athleteId: String,
         @PathVariable date: String,
     ): IntervalsWellnessDTO?
+
+    @GetMapping("/api/v1/athlete/{athleteId}/sport-settings")
+    fun getSportSettings(
+        @PathVariable athleteId: String,
+    ): List<Map<String, Any?>>
+
+    @PutMapping("/api/v1/athlete/{athleteId}/sport-settings/{id}")
+    fun updateSportSettings(
+        @PathVariable athleteId: String,
+        @PathVariable id: String,
+        @RequestParam("recalcHrZones") recalcHrZones: Boolean,
+        @RequestBody settings: Map<String, Any?>,
+    )
 }

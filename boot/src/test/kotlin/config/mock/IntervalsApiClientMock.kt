@@ -49,4 +49,17 @@ class IntervalsApiClientMock(
     override fun getWellness(athleteId: String, date: String): IntervalsWellnessDTO? {
         TODO("Not yet implemented")
     }
+
+    override fun getSportSettings(athleteId: String): List<Map<String, Any?>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateSportSettings(
+        athleteId: String,
+        id: String,
+        recalcHrZones: Boolean,
+        settings: Map<String, Any?>
+    ) {
+        TODO("Not yet implemented")
+    }
 }
