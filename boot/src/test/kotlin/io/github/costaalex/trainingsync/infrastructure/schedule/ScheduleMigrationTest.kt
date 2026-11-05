@@ -46,6 +46,41 @@ class ScheduleMigrationTest {
         }
     }
 
+    @Test
+    fun `sets null FTP sync history values to false`() {
+        val databaseUrl = "jdbc:sqlite:${temporaryDirectory.resolve("ftp-history.sqlite")}"
+        DriverManager.getConnection(databaseUrl).use { connection ->
+            connection.createStatement().use { statement ->
+                statement.execute(
+                    "CREATE TABLE sync_executions (id INTEGER PRIMARY KEY, ftp_synced BOOLEAN)"
+                )
+                statement.execute(
+                    "INSERT INTO sync_executions (id, ftp_synced) VALUES (1, NULL), (2, 1)"
+                )
+            }
+        }
+
+        migrate(
+            databaseUrl,
+            "db/changelog/schemas/0018-fix-ftp-synced-null-values.yaml",
+        )
+
+        DriverManager.getConnection(databaseUrl).use { connection ->
+            connection.createStatement().use { statement ->
+                statement.executeQuery(
+                    "SELECT ftp_synced FROM sync_executions ORDER BY id"
+                ).use { result ->
+                    assertThat(result.next()).isTrue()
+                    assertThat(result.getBoolean("ftp_synced")).isFalse()
+                    assertThat(result.wasNull()).isFalse()
+                    assertThat(result.next()).isTrue()
+                    assertThat(result.getBoolean("ftp_synced")).isTrue()
+                    assertThat(result.next()).isFalse()
+                }
+            }
+        }
+    }
+
     private fun migrate(databaseUrl: String, changeLog: String) {
         DriverManager.getConnection(databaseUrl).use { connection ->
             val database = DatabaseFactory.getInstance()

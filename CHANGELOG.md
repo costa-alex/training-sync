@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Fixed Sync Center history loading when existing synchronization records contain a null FTP-sync flag by migrating those values to false.
 - Preserved scheduled synchronization definitions when upgrading through the legacy schedule-table correction migration.
 - Invalidated platform account caches after configuration changes to prevent stale credentials and account data.
 - Rejected invalid date ranges and unsupported platform operations with clear client errors.
