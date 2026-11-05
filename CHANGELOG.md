@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added descriptive tooltips to the "Confirm", "Only today", and "Only tomorrow" calendar-sync buttons.
 - Added an optional "Sync Weight to TrainerRoad?" setting on the Intervals.icu Settings card. When enabled, every calendar synchronization also pushes today's Intervals.icu wellness weight to TrainerRoad's rider information, but only when the weight has actually changed since the last check. This checkbox is only available once both **Intervals.icu** and **TrainerRoad** are configured and connected; it is disabled otherwise.
 - Added a "Weight updated on TrainerRoad" indicator to the Sync Center history list, shown on executions where the weight synchronization described above actually updated TrainerRoad.
+- Added an optional "Sync FTP to Intervals.icu" setting on the TrainerRoad Settings card. When enabled, calendar synchronization compares TrainerRoad FTP with Intervals.icu's `ftp` and `indoor_ftp` values for **Ride** and **VirtualRide**, updating both only when either value differs. The setting is off by default and is only available when both platforms are connected.
+- Added an "FTP updated on Intervals.icu" indicator to Sync Center history when a sport setting was successfully updated.
 
 ### Changed
 

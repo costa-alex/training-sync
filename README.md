@@ -100,6 +100,14 @@ When enabled, every calendar synchronization (manual, scheduled, or **Run now**)
 
 This feature requires both **Intervals.icu** and **TrainerRoad** to be configured and connected. It is controlled by the **Sync Weight to TrainerRoad?** checkbox on the Intervals.icu Settings card, which is only enabled once both platforms are connected.
 
+### FTP synchronization
+
+TrainingSync can optionally synchronize the FTP from TrainerRoad to Intervals.icu during calendar synchronizations (manual, scheduled, or **Run now**).
+
+When enabled, TrainingSync reads the FTP from TrainerRoad's member information and checks the Intervals.icu sport settings for **Ride** and **VirtualRide**. It updates a setting only when its existing FTP values differ, and sets both `ftp` and `indoor_ftp` to the TrainerRoad value. Other activity types are not changed.
+
+This feature requires both **TrainerRoad** and **Intervals.icu** to be configured and connected. It is controlled by the **Sync FTP to Intervals.icu** checkbox on the TrainerRoad Settings card, which is only enabled once both platforms are connected. It is off by default.
+
 ### User interface
 
 - Responsive Angular Material interface designed for desktop and mobile use.
@@ -162,6 +170,7 @@ Calendar-to-calendar executions are stored and displayed on the Sync Center page
 - execution status;
 - available error details;
 - whether the TrainerRoad weight was updated during that run (see [Weight synchronization](#weight-synchronization)).
+- whether TrainerRoad FTP was updated in Intervals.icu during that run (see [FTP synchronization](#ftp-synchronization)).
 - how many completed workouts were associated with planned TrainerRoad workouts during that run.
 
 Possible statuses are:
@@ -241,6 +250,8 @@ To obtain it:
 The **Remove HTML tags from description** option can be enabled if TrainerRoad descriptions contain unwanted markup.
 
 The **Associate completed workouts with scheduled workouts** option controls whether completed activities are linked to uniquely matching scheduled workouts when the TrainerRoad calendar is read.
+
+The **Sync FTP to Intervals.icu** checkbox enables the [FTP synchronization](#ftp-synchronization) feature. It is off by default and is only available once both TrainerRoad and Intervals.icu are configured and connected.
 
 See [`docs/tr_guide.png`](docs/tr_guide.png) for a visual guide.
 
