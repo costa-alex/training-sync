@@ -103,13 +103,6 @@
   margin-top: 6px;
 }
 
-.beta-indicator {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  color: var(--app-text-muted);
-}
-
 .tooltip-help-icon {
   display: inline-flex;
   align-items: center;
@@ -118,7 +111,7 @@
 }
 
 .sync-setting-hint {
-  margin: 4px 0 0;
+  margin: 0 0 0 45px;
   font-size: 0.75rem;
   color: var(--app-text-muted);
 }
@@ -156,12 +149,20 @@
 
 .log-location-list > div {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: minmax(10rem, 11rem) minmax(0, 1fr);
   gap: 8px;
 }
 
 .log-location-list span {
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.log-location-hint {
+  margin: 12px 0 0;
+  color: var(--app-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .log-location-list code {

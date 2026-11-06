@@ -29,7 +29,8 @@
         class="drawer-item"
         [routerLink]="button.url"
         (click)="drawer.close()"
-        [activated]="router.url === button.url">
+        [activated]="isMenuItemActive(button.url)"
+        [attr.aria-current]="isMenuItemActive(button.url) ? 'page' : null">
 
         <mat-icon
           matListItemIcon

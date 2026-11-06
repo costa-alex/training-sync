@@ -22,8 +22,6 @@ import {
   TpCopyPlanWarningDialogComponent
 } from "app/training-peaks/tp-copy-library-container/tp-copy-plan-warning-dialog/tp-copy-plan-warning-dialog.component";
 import {formatDate} from "utils/date-formatter";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatIconModule} from "@angular/material/icon";
 import {StepModifier} from "app/training-peaks/tp-copy-library-container/step-modifier";
 import {LibraryContainer} from 'infrastructure/api-models';
 import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
@@ -43,16 +41,13 @@ import {MondayFirstDateAdapter} from 'infrastructure/monday-first-date-adapter';
     MatSnackBarModule,
     MatSelectModule,
     MatCheckboxModule,
-    AsyncPipe,
-    MatTooltipModule,
-    MatIconModule
+    AsyncPipe
 ],
     providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
     {provide: DateAdapter, useClass: MondayFirstDateAdapter}
 ],
-    templateUrl: './tp-copy-library-container.component.html',
-    styleUrl: './tp-copy-library-container.component.scss'
+    templateUrl: './tp-copy-library-container.component.html'
 })
 export class TpCopyLibraryContainerComponent implements OnInit {
   private readonly mondayDate = formatDate(this.getMonday(new Date()))

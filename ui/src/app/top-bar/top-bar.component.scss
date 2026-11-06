@@ -4,28 +4,103 @@
   position: -webkit-sticky;
   top: 0;
   z-index: 3;
+  padding: 12px clamp(14px, 3vw, 40px) 0;
 }
 
 .top-bar {
   width: 100%;
   box-sizing: border-box;
+  min-height: 68px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, var(--app-border) 72%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--app-surface) 88%, transparent);
+  color: var(--app-text);
+  box-shadow: var(--app-shadow);
+  backdrop-filter: blur(18px);
 }
 
 .desktop-menu {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 4px;
+  margin-left: 28px;
 }
 
-.active-page-button {
-  --mat-button-outlined-label-text-color: var(--app-on-primary);
-  --mat-button-outlined-outline-color: var(--app-on-primary);
-  --mat-mdc-button-persistent-ripple-color: var(--app-on-primary);
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(140deg, #315e9e, #087a72);
+  color: #fff;
+  box-shadow: 0 7px 16px rgba(19, 88, 125, 0.22);
+}
+
+.brand-mark mat-icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-copy strong {
+  font-size: 0.95rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.brand-copy small {
+  color: var(--app-text-muted);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.desktop-menu-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 42px;
+  padding: 0 10px;
+  border-radius: 12px !important;
+  color: var(--app-text-muted) !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.desktop-menu-link mat-icon {
+  width: 19px;
+  height: 19px;
+  font-size: 19px;
+}
+
+.desktop-menu-link.active-page-button {
+  background: var(--app-accent-container);
+  color: var(--app-accent) !important;
 }
 
 .mobile-page-title {
-  margin-left: 12px;
+  margin-left: 8px;
   font-weight: 600;
   font-size: 1rem;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -44,6 +119,12 @@
 @media (max-width: 420px) {
   .mobile-title span {
     display: none;
+  }
+
+  .top-bar {
+    min-height: 60px;
+    padding: 0 8px;
+    border-radius: 16px;
   }
 }
 
@@ -90,4 +171,10 @@
 
 :host ::ng-deep .github-icon svg {
   display: block;
+}
+
+@media (max-width: 900px) {
+  :host {
+    padding: 8px 14px 0;
+  }
 }

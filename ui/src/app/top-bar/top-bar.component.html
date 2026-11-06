@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="top-bar">
+<mat-toolbar class="top-bar">
 
   @if (isMobile$ | async) {
 
@@ -15,27 +15,34 @@
 
   } @else {
 
-    <div class="desktop-menu">
+    <a
+      class="brand-link"
+      routerLink="/home"
+      aria-label="TrainingSync home">
+      <span class="brand-mark">
+        <mat-icon>sync</mat-icon>
+      </span>
+      <span class="brand-copy">
+        <strong>TrainingSync</strong>
+        <small>WORKOUT WORKSPACE</small>
+      </span>
+    </a>
+
+    <nav class="desktop-menu" aria-label="Main navigation">
       @for (button of menuButtons; track button.url) {
-
-        @if (router.url === button.url) {
-          <button
-            mat-stroked-button
-            class="active-page-button"
-            [routerLink]="[button.url]">
+        <a
+          mat-button
+          class="desktop-menu-link"
+          [class.active-page-button]="isActive(button.url)"
+          [attr.aria-current]="isActive(button.url) ? 'page' : null"
+          [routerLink]="[button.url]">
+          <mat-icon>{{ button.icon }}</mat-icon>
+          <span>
             {{ button.name }}
-          </button>
-        } @else {
-          <button
-            mat-flat-button
-            color="primary"
-            [routerLink]="[button.url]">
-            {{ button.name }}
-          </button>
-        }
-
+          </span>
+        </a>
       }
-    </div>
+    </nav>
 
   }
 

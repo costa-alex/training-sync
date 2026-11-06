@@ -37,7 +37,7 @@
   min-width: 220px;
 }
 
-.beta-icon {
+.premium-warning-icon {
   opacity: .7;
   display: inline-flex;
   align-items: center;
@@ -58,7 +58,7 @@
     min-width: 0;
   }
 
-  .beta-icon {
+  .premium-warning-icon {
     justify-self: center;
   }
 }
@@ -69,20 +69,6 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-}
-
-.beta-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 6px;
-  border-radius: 999px;
-  font-size: 0.65rem;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  background: var(--app-primary-badge-background);
-  border: 1px solid var(--app-primary-badge-border);
 }
 
 .automation-link {

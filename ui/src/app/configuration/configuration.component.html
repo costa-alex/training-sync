@@ -78,14 +78,6 @@
             <mat-checkbox formControlName="trainer-road.associate-completed-workouts">
               Match completed workouts with scheduled workouts
             </mat-checkbox>
-            <span
-              class="beta-indicator"
-              matTooltip="Beta feature. When reading the TrainerRoad calendar, uniquely matching completed activities are linked to scheduled workouts with the same date and workout name."
-              matTooltipPosition="right"
-              aria-label="Beta feature"
-              tabindex="0">
-              <mat-icon>auto_awesome</mat-icon>
-            </span>
           </div>
 
           <div class="checkbox-line">
@@ -267,8 +259,13 @@
               <span>Log location</span>
             </div>
             <div class="log-location-list">
-              <div><span>Docker</span><code>~/.config/training-sync/logs/main.log</code></div>
+              <div><span>Docker</span><code>/data/training-sync.log</code></div>
+              <div><span>Windows</span><code>%LOCALAPPDATA%\TrainingSync\training-sync.log</code></div>
+              <div><span>Local development</span><code>../data/training-sync.log</code></div>
             </div>
+            <p class="log-location-hint">
+              A custom LOGGING_FILE_NAME overrides these paths.
+            </p>
           </div>
         }
       </mat-card-content>

@@ -26,7 +26,7 @@ export class TopBarComponent {
   @Output() menuClicked = new EventEmitter<void>();
 
   readonly isMobile$ = this.breakpointObserver
-    .observe('(max-width: 768px)')
+    .observe('(max-width: 900px)')
     .pipe(
       map(result => result.matches),
       shareReplay({ bufferSize: 1, refCount: true })
@@ -40,6 +40,12 @@ export class TopBarComponent {
     );
 
     return currentButton?.name ?? '';
+  }
+
+  isActive(url: string): boolean {
+    const currentUrl = this.router.url.split('?')[0].split('#')[0];
+
+    return currentUrl === url || currentUrl.startsWith(`${url}/`);
   }
 
   constructor(

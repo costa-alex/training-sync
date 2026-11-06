@@ -96,4 +96,10 @@ export class AppComponent implements OnInit {
         }
       });
   }
+
+  isMenuItemActive(url: string): boolean {
+    const currentUrl = this.router.url.split('?')[0].split('#')[0];
+
+    return currentUrl === url || currentUrl.startsWith(`${url}/`);
+  }
 }

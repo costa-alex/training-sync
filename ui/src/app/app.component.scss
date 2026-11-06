@@ -4,23 +4,28 @@
 
 .app-drawer-content {
   min-height: 100vh;
+  overflow: visible;
 }
 
 .app-content-shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .app-main {
   flex: 1 0 auto;
-  padding: 24px;
+  box-sizing: border-box;
+  width: min(100%, 1600px);
+  margin: 0 auto;
+  padding: 36px clamp(20px, 4vw, 56px) 24px;
 }
 
 .app-footer {
-  margin-top: 64px;
-  padding: 24px 16px;
-  border-top: 1px solid var(--app-border);
+  margin: 48px clamp(20px, 4vw, 56px) 0;
+  padding: 22px 16px 26px;
+  border-top: 1px solid color-mix(in srgb, var(--app-border) 72%, transparent);
 }
 
 .drawer-header {
@@ -38,12 +43,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 15px;
   color: #ffffff;
-  background: var(--app-primary);
+  background: linear-gradient(140deg, #315e9e, #087a72);
+  box-shadow: 0 8px 18px rgba(19, 88, 125, 0.24);
   font-size: 0.9rem;
   font-weight: 750;
   letter-spacing: -0.03em;
@@ -67,7 +73,7 @@
   overflow: hidden;
   font-size: 0.75rem;
   line-height: 1.3;
-  color: var(--app-text-secondary);
+  color: var(--app-text-muted);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -91,11 +97,12 @@
 
 @media (max-width: 768px) {
   .app-main {
-    padding: 16px;
+    padding: 24px 18px 16px;
   }
 
   .app-footer {
-    padding: 20px 12px;
+    margin: 36px 18px 0;
+    padding: 20px 4px 24px;
   }
 
   .footer-disclaimer {
@@ -136,6 +143,8 @@
 .app-drawer {
   width: 260px;
   max-width: 85vw;
+  border-radius: 0 24px 24px 0;
+  box-shadow: var(--app-shadow-hover);
 }
 
 .drawer-header {
@@ -158,7 +167,9 @@
 }
 
 .drawer-item {
-  height: 56px;
+  height: 52px;
+  margin: 3px 10px;
+  border-radius: 12px;
 }
 
 .drawer-item-icon {
@@ -181,4 +192,22 @@
 
 :host ::ng-deep .app-drawer .drawer-item .mdc-list-item__primary-text {
   margin-left: 0 !important;
+}
+
+:host ::ng-deep .app-drawer .drawer-item[aria-current='page'] {
+  background: var(--app-accent-container);
+  color: var(--app-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 420px) {
+  .app-main {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .app-footer {
+    margin-right: 14px;
+    margin-left: 14px;
+  }
 }
