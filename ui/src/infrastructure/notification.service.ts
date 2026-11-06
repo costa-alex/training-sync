@@ -159,7 +159,7 @@ export class NotificationService {
   }
 
   configurationSaved(): void {
-    this.success('Settings saved successfully.');
+    this.success('Settings updated successfully.');
   }
 
   scheduledSyncCreated(): void {

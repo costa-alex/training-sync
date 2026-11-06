@@ -12,8 +12,6 @@ import {
   Validators
 } from '@angular/forms';
 
-import { Router } from '@angular/router';
-
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -147,7 +145,6 @@ export class ConfigurationComponent implements OnInit {
   };
 
   constructor(
-    private readonly router: Router,
     private readonly formBuilder: FormBuilder,
     private readonly configClient: ConfigurationClient,
     private readonly notificationService: NotificationService,
@@ -208,7 +205,6 @@ export class ConfigurationComponent implements OnInit {
       .subscribe({
         next: () => {
           this.notificationService.configurationSaved();
-          this.router.navigate(['/home']);
         },
         error: () => {
           // The HTTP interceptor already displayed the error.
