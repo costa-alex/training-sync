@@ -133,6 +133,14 @@ body {
   border-radius: 12px !important;
 }
 
+.configuration-page .advanced-panel > .mat-expansion-panel-content-wrapper {
+  height: 0;
+}
+
+.configuration-page .advanced-panel.mat-expanded > .mat-expansion-panel-content-wrapper {
+  height: auto;
+}
+
 .mat-mdc-form-field {
   --mat-form-field-container-shape: 12px;
 }
