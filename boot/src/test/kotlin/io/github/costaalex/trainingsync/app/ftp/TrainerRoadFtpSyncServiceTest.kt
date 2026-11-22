@@ -8,6 +8,7 @@ import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.Trai
 import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.configuration.TrainerRoadConfiguration
 import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.configuration.TrainerRoadConfigurationRepository
 import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.member.TrainerRoadMemberApiClient
+import io.github.costaalex.trainingsync.infrastructure.platform.trainerroad.riderinformation.TrainerRoadRiderInformationApiClient
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -25,11 +26,14 @@ import tools.jackson.module.kotlin.readValue
 class TrainerRoadFtpSyncServiceTest {
 
     private val trainerRoadMemberApiClient = mock<TrainerRoadMemberApiClient>()
+    private val trainerRoadRiderInformationApiClient =
+        mock<TrainerRoadRiderInformationApiClient>()
     private val intervalsApiClient = mock<IntervalsApiClient>()
     private val intervalsConfigurationRepository = mock<IntervalsConfigurationRepository>()
     private val trainerRoadConfigurationRepository = mock<TrainerRoadConfigurationRepository>()
     private val service = TrainerRoadFtpSyncService(
         trainerRoadMemberApiClient,
+        trainerRoadRiderInformationApiClient,
         intervalsApiClient,
         intervalsConfigurationRepository,
         trainerRoadConfigurationRepository,
@@ -42,14 +46,18 @@ class TrainerRoadFtpSyncServiceTest {
         val member = objectMapper.readValue<TrainerRoadMemberDTO>(
             """{"memberId":1,"username":"athlete","ftp":250}"""
         )
+        val uppercaseFtpMember = objectMapper.readValue<TrainerRoadMemberDTO>(
+            """{"memberId":2,"username":"athlete","FTP":275}"""
+        )
 
         assertEquals(250, member.ftp)
+        assertEquals(275, uppercaseFtpMember.ftp)
     }
 
     @Test
     fun `updates only Ride and VirtualRide settings while preserving other fields`() {
-        whenever(trainerRoadMemberApiClient.getMember())
-            .thenReturn(TrainerRoadMemberDTO(1, "athlete", ftp = 250))
+        whenever(trainerRoadRiderInformationApiClient.getRiderInformation())
+            .thenReturn(mapOf("ftp" to 250))
         configurePlatforms()
         whenever(intervalsConfigurationRepository.getConfiguration())
             .thenReturn(IntervalsConfiguration("key", "athlete", 0.1f, 0.2f, 0.3f))
@@ -57,7 +65,14 @@ class TrainerRoadFtpSyncServiceTest {
             listOf(
                 mapOf(
                     "id" to 10,
-                    "types" to listOf("Ride"),
+                    "types" to listOf(
+                        "Ride",
+                        "GravelRide",
+                        "MountainBikeRide",
+                        "VirtualRide",
+                        "TrackRide",
+                        "Cyclocross",
+                    ),
                     "ftp" to 250,
                     "indoor_ftp" to 200,
                     "warmup_time" to 300,
@@ -77,22 +92,26 @@ class TrainerRoadFtpSyncServiceTest {
 
         verify(intervalsApiClient).updateSportSettings(
             athleteId = "athlete",
-            id = "10",
+            sportType = "Ride",
             recalcHrZones = false,
             settings = mapOf(
-                "id" to 10,
-                "types" to listOf("Ride"),
+                "types" to listOf(
+                    "Ride",
+                    "GravelRide",
+                    "MountainBikeRide",
+                    "VirtualRide",
+                    "TrackRide",
+                    "Cyclocross",
+                ),
                 "ftp" to 250,
                 "indoor_ftp" to 250,
-                "warmup_time" to 300,
             ),
         )
         verify(intervalsApiClient).updateSportSettings(
             athleteId = "athlete",
-            id = "11",
+            sportType = "VirtualRide",
             recalcHrZones = false,
             settings = mapOf(
-                "id" to 11,
                 "types" to listOf("VirtualRide"),
                 "ftp" to 250,
                 "indoor_ftp" to 250,
@@ -101,18 +120,6 @@ class TrainerRoadFtpSyncServiceTest {
         verify(intervalsApiClient, times(2)).updateSportSettings(
             eq("athlete"),
             any(),
-            eq(false),
-            any(),
-        )
-        verify(intervalsApiClient, never()).updateSportSettings(
-            eq("athlete"),
-            eq("12"),
-            eq(false),
-            any(),
-        )
-        verify(intervalsApiClient, never()).updateSportSettings(
-            eq("athlete"),
-            eq("13"),
             eq(false),
             any(),
         )

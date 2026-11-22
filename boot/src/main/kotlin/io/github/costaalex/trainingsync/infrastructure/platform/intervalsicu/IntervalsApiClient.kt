@@ -80,10 +80,10 @@ interface IntervalsApiClient {
         @PathVariable athleteId: String,
     ): List<Map<String, Any?>>
 
-    @PutMapping("/api/v1/athlete/{athleteId}/sport-settings/{id}")
+    @PutMapping("/api/v1/athlete/{athleteId}/sport-settings/{sportType}")
     fun updateSportSettings(
         @PathVariable athleteId: String,
-        @PathVariable id: String,
+        @PathVariable sportType: String,
         @RequestParam("recalcHrZones") recalcHrZones: Boolean,
         @RequestBody settings: Map<String, Any?>,
     )

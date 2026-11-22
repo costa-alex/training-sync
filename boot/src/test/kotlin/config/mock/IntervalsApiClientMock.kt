@@ -56,7 +56,7 @@ class IntervalsApiClientMock(
 
     override fun updateSportSettings(
         athleteId: String,
-        id: String,
+        sportType: String,
         recalcHrZones: Boolean,
         settings: Map<String, Any?>
     ) {
