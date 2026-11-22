@@ -24,7 +24,7 @@ import java.time.LocalDate
 class SyncExecutionServiceFtpHistoryTest {
 
     @Test
-    fun `records FTP updates in sync execution history`() {
+    fun `records FTP updates for TrainerRoad to TrainingPeaks syncs`() {
         val workoutService = mock<WorkoutService>()
         val syncExecutionRepository = mock<SyncExecutionRepository>()
         val maintenanceService = mock<SyncExecutionMaintenanceService>()
@@ -37,7 +37,7 @@ class SyncExecutionServiceFtpHistoryTest {
             types = listOf(TrainingType.BIKE),
             skipSynced = true,
             sourcePlatform = Platform.TRAINER_ROAD,
-            targetPlatform = Platform.INTERVALS,
+            targetPlatform = Platform.TRAINING_PEAKS,
         )
         whenever(workoutService.copyWorkoutsC2C(request)).thenReturn(
             CopyWorkoutsResponse(
@@ -68,8 +68,9 @@ class SyncExecutionServiceFtpHistoryTest {
 
         service.execute(request, SyncExecutionTrigger.MANUAL)
 
+        verify(trainerRoadFtpSyncService).syncFtpIfEnabled()
         val savedExecutions = argumentCaptor<SyncExecutionEntity>()
-        verify(syncExecutionRepository, times(2)).save(savedExecutions.capture())
+        verify(syncExecutionRepository, times(3)).save(savedExecutions.capture())
         val completedExecution = savedExecutions.allValues.last()
         assertTrue(completedExecution.ftpSynced)
         assertTrue(SyncExecutionResponse.fromEntity(completedExecution).ftpSynced)

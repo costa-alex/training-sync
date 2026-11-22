@@ -5,7 +5,6 @@ import io.github.costaalex.trainingsync.app.workout.CopyFromCalendarToCalendarRe
 import io.github.costaalex.trainingsync.app.workout.CopyWorkoutsResponse
 import io.github.costaalex.trainingsync.app.workout.WorkoutService
 import io.github.costaalex.trainingsync.app.weight.WeightSyncService
-import io.github.costaalex.trainingsync.domain.Platform
 import io.github.costaalex.trainingsync.infrastructure.sync.SyncExecutionEntity
 import io.github.costaalex.trainingsync.infrastructure.sync.SyncExecutionRepository
 import org.springframework.stereotype.Service
@@ -47,13 +46,6 @@ class SyncExecutionService(
         try {
             val response =
                 workoutService.copyWorkoutsC2C(request)
-
-            if (
-                request.sourcePlatform == Platform.TRAINER_ROAD &&
-                request.targetPlatform == Platform.INTERVALS
-            ) {
-                execution.ftpSynced = trainerRoadFtpSyncService.syncFtpIfEnabled()
-            }
 
             execution.finishedAt = LocalDateTime.now()
             execution.copied = response.copied
@@ -107,6 +99,13 @@ class SyncExecutionService(
                     "Unable to enforce sync history retention",
                     exception
                 )
+            }
+
+            trainerRoadFtpSyncService.syncFtpIfEnabled().let { ftpSynced ->
+                if (ftpSynced) {
+                    execution.ftpSynced = true
+                    syncExecutionRepository.save(execution)
+                }
             }
 
             weightSyncService.syncWeightIfEnabled().let { weightSynced ->

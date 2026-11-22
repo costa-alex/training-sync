@@ -102,9 +102,9 @@ This feature requires both **Intervals.icu** and **TrainerRoad** to be configure
 
 ### FTP synchronization
 
-TrainingSync can optionally synchronize the FTP from TrainerRoad to Intervals.icu during calendar synchronizations (manual, scheduled, or **Run now**).
+When enabled, every calendar synchronization (manual, scheduled, or **Run now**) checks the FTP from TrainerRoad against Intervals.icu, regardless of the calendar synchronization's source and destination. FTP is updated only when the values differ.
 
-When enabled, TrainingSync reads the FTP from TrainerRoad's member information and checks the Intervals.icu sport settings for **Ride** and **VirtualRide**. It updates a setting only when its existing FTP values differ, and sets both `ftp` and `indoor_ftp` to the TrainerRoad value. Other activity types are not changed.
+TrainingSync reads the FTP from TrainerRoad's member information and checks the Intervals.icu sport settings for **Ride** and **VirtualRide**. It updates a setting only when its existing FTP values differ, and sets both `ftp` and `indoor_ftp` to the TrainerRoad value. Other activity types are not changed.
 
 This feature requires both **TrainerRoad** and **Intervals.icu** to be configured and connected. It is controlled by the **Sync FTP to Intervals.icu** checkbox on the TrainerRoad Settings card, which is only enabled once both platforms are connected. It is off by default.
 

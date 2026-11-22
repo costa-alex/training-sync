@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- FTP synchronization now runs during every calendar synchronization, regardless of source and destination, when its setting is enabled and TrainerRoad and Intervals.icu are connected.
 - Renamed the application from Workout Relay to **TrainingSync**.
 - Renamed the Gradle project, JAR, Spring application, Docker service, container image, GitHub repository, Kotlin base package (`io.github.costaalex.trainingsync`), and npm package.
 - Updated application branding, metadata, documentation, CI, and release workflows.

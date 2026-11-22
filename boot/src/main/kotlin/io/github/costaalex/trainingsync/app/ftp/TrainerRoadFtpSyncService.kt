@@ -21,6 +21,12 @@ class TrainerRoadFtpSyncService(
             if (!trainerRoadConfigurationRepository.getConfiguration().syncFtpToIntervals) {
                 return false
             }
+            if (
+                trainerRoadConfigurationRepository.platformInfo().infoMap["isValid"] != true ||
+                intervalsConfigurationRepository.platformInfo().infoMap["isValid"] != true
+            ) {
+                return false
+            }
             syncFtp()
         } catch (exception: Exception) {
             log.warn("Unable to sync FTP from TrainerRoad to Intervals.icu", exception)

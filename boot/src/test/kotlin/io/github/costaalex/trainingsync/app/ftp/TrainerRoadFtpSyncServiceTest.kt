@@ -1,5 +1,6 @@
 package io.github.costaalex.trainingsync.app.ftp
 
+import io.github.costaalex.trainingsync.domain.config.PlatformInfo
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.IntervalsApiClient
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.configuration.IntervalsConfiguration
 import io.github.costaalex.trainingsync.infrastructure.platform.intervalsicu.configuration.IntervalsConfigurationRepository
@@ -49,8 +50,7 @@ class TrainerRoadFtpSyncServiceTest {
     fun `updates only Ride and VirtualRide settings while preserving other fields`() {
         whenever(trainerRoadMemberApiClient.getMember())
             .thenReturn(TrainerRoadMemberDTO(1, "athlete", ftp = 250))
-        whenever(trainerRoadConfigurationRepository.getConfiguration())
-            .thenReturn(TrainerRoadConfiguration(null, false, true, true))
+        configurePlatforms()
         whenever(intervalsConfigurationRepository.getConfiguration())
             .thenReturn(IntervalsConfiguration("key", "athlete", 0.1f, 0.2f, 0.3f))
         whenever(intervalsApiClient.getSportSettings("athlete")).thenReturn(
@@ -122,8 +122,7 @@ class TrainerRoadFtpSyncServiceTest {
     fun `skips settings already using TrainerRoad FTP`() {
         whenever(trainerRoadMemberApiClient.getMember())
             .thenReturn(TrainerRoadMemberDTO(1, "athlete", ftp = 250))
-        whenever(trainerRoadConfigurationRepository.getConfiguration())
-            .thenReturn(TrainerRoadConfiguration(null, false, true, true))
+        configurePlatforms()
         whenever(intervalsConfigurationRepository.getConfiguration())
             .thenReturn(IntervalsConfiguration("key", "athlete", 0.1f, 0.2f, 0.3f))
         whenever(intervalsApiClient.getSportSettings("athlete")).thenReturn(
@@ -148,13 +147,38 @@ class TrainerRoadFtpSyncServiceTest {
     }
 
     @Test
-    fun `does not fetch or update FTP when the TrainerRoad setting is disabled`() {
+    fun `does not fetch or update FTP when either platform is not configured`() {
         whenever(trainerRoadConfigurationRepository.getConfiguration())
-            .thenReturn(TrainerRoadConfiguration(null, false, true))
+            .thenReturn(TrainerRoadConfiguration(null, false, true, true))
+        whenever(trainerRoadConfigurationRepository.platformInfo())
+            .thenReturn(PlatformInfo(mapOf("isValid" to true)))
+        whenever(intervalsConfigurationRepository.platformInfo())
+            .thenReturn(PlatformInfo(mapOf("isValid" to false)))
 
         assertFalse(service.syncFtpIfEnabled())
 
         verify(trainerRoadMemberApiClient, never()).getMember()
         verify(intervalsApiClient, never()).getSportSettings(any())
+    }
+
+    @Test
+    fun `does not fetch or update FTP when its setting is disabled`() {
+        configurePlatforms(syncFtpEnabled = false)
+
+        assertFalse(service.syncFtpIfEnabled())
+
+        verify(trainerRoadMemberApiClient, never()).getMember()
+        verify(intervalsConfigurationRepository, never()).platformInfo()
+        verify(intervalsApiClient, never()).getSportSettings(any())
+    }
+
+    private fun configurePlatforms(syncFtpEnabled: Boolean = true) {
+        val validPlatformInfo = PlatformInfo(mapOf("isValid" to true))
+        whenever(trainerRoadConfigurationRepository.getConfiguration())
+            .thenReturn(TrainerRoadConfiguration(null, false, true, syncFtpEnabled))
+        whenever(trainerRoadConfigurationRepository.platformInfo())
+            .thenReturn(validPlatformInfo)
+        whenever(intervalsConfigurationRepository.platformInfo())
+            .thenReturn(validPlatformInfo)
     }
 }
