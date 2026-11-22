@@ -8,7 +8,7 @@ TrainingSync is a self-hosted web application for copying and synchronizing plan
 
 It provides a responsive, mobile-friendly interface for manual synchronization, workout-library operations, recurring schedules, and synchronization history.
 
-TrainingSync is distributed as a Docker image and as a self-contained ZIP for Windows x64.
+TrainingSync is distributed as a Docker image and as self-contained ZIPs for Windows x64 and macOS Apple Silicon.
 
 > This project is independent and is not affiliated with, endorsed by, or sponsored by TrainerRoad, TrainingPeaks, or Intervals.icu. All trademarks belong to their respective owners.
 
@@ -27,6 +27,7 @@ TrainingSync is distributed as a Docker image and as a self-contained ZIP for Wi
 - [Settings](#settings)
 - [Running with Docker Compose](#running-with-docker-compose)
 - [Running on Windows](#running-on-windows)
+- [Running on macOS](#running-on-macos)
 - [Updating](#updating)
 - [Building from source](#building-from-source)
 - [Continuous integration and releases](#continuous-integration-and-releases)
@@ -190,7 +191,7 @@ Open **Settings** after starting the application. Intervals.icu credentials are 
 
 The **General** section offers System, Light, and Dark appearance modes. System follows the operating-system preference, while an explicit choice is stored in the current browser.
 
-Platform settings, schedules, and execution history are stored in the SQLite database under `/data` for Docker deployments or `%LOCALAPPDATA%\TrainingSync` for the Windows ZIP.
+Platform settings, schedules, and execution history are stored in the SQLite database under `/data` for Docker deployments, `%LOCALAPPDATA%\TrainingSync` for the Windows ZIP, or `~/Library/Application Support/TrainingSync` for the macOS ZIP.
 
 ### Intervals.icu
 
@@ -353,6 +354,22 @@ The launcher binds the server to this computer only. Keep the console window ope
 
 To update, stop the application, back up `%LOCALAPPDATA%\TrainingSync`, extract the new release into a new or replacement application folder, and start it again. Do not run the Windows and Docker installations against the same SQLite database at the same time.
 
+## Running on macOS
+
+Download `TrainingSync-macos-arm64-<version>.zip` from the GitHub Release assets and extract it. This package is for Apple Silicon Macs only and includes its Java runtime; no Java installation is required.
+
+Run `start-training-sync.command` and open:
+
+```text
+http://localhost:8080
+```
+
+Keep the Terminal window open while using TrainingSync and press Ctrl+C in it to stop the server. Application data and logs are stored in `~/Library/Application Support/TrainingSync`, independently from Docker and Windows installations.
+
+The ZIP is not signed or notarized by Apple. macOS may require you to approve the launcher in **System Settings > Privacy & Security** before it can run.
+
+To update, stop the application, back up `~/Library/Application Support/TrainingSync`, extract the new release, and start it again. Do not run the macOS and Docker installations against the same SQLite database at the same time.
+
 ## Updating
 
 Pull the newest image and recreate the container:
@@ -400,7 +417,7 @@ The application is a web server, not a desktop client. The multi-stage Docker bu
 3. builds the Kotlin application with Java 21;
 4. produces a single runtime container exposing port `8080`.
 
-Windows ZIP releases are built separately on a Windows runner. They bundle the same Angular UI and Spring Boot application with a Java runtime and a launcher.
+Windows x64 and macOS Apple Silicon ZIP releases are built on their respective native runners. Both bundle the same Angular UI and Spring Boot application with an architecture-matched Java runtime and launcher.
 
 ### Local development
 
@@ -489,9 +506,9 @@ The release workflow:
 1. validates the requested version;
 2. prepares the `boot/version` change and Git tag locally;
 3. runs backend and frontend validation;
-4. builds and smoke-tests the self-contained Windows x64 ZIP;
+4. builds and smoke-tests the self-contained Windows x64 and macOS Apple Silicon ZIPs;
 5. prepares the Docker image and atomically pushes the release commit and tag;
-6. publishes the Docker image and creates the GitHub Release with the Windows ZIP attached.
+6. publishes the Docker image and creates the GitHub Release with both ZIPs attached.
 
 Published images use the following tags:
 
@@ -514,7 +531,7 @@ The `/data` directory contains the persistent application state:
 
 The SQLite database contains platform configuration, schedules, and synchronization history. Protect it because it may contain authentication cookies.
 
-For the Windows ZIP, the corresponding database and log are stored at `%LOCALAPPDATA%\TrainingSync\training-sync.sqlite` and `%LOCALAPPDATA%\TrainingSync\training-sync.log`.
+For the Windows ZIP, the database and log are stored at `%LOCALAPPDATA%\TrainingSync\training-sync.sqlite` and `%LOCALAPPDATA%\TrainingSync\training-sync.log`. For the macOS ZIP, they are stored at `~/Library/Application Support/TrainingSync/training-sync.sqlite` and `~/Library/Application Support/TrainingSync/training-sync.log`.
 
 ### Backup
 
